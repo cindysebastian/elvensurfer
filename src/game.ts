@@ -8,48 +8,59 @@ if (!ctx) {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Define the lanes
+const laneWidth = canvas.width / 3; // Divide the canvas into 3 equal lanes
+const lanes = [
+    laneWidth * 0.5,  // Center of the first lane
+    laneWidth * 1.5,  // Center of the second lane
+    laneWidth * 2.5   // Center of the third lane
+];
+
+// Player settings
 let player = {
-    x: 50,
+    laneIndex: 1,  // Start in the middle lane
     y: canvas.height - 150,
     width: 50,
     height: 50,
     color: 'blue',
     dy: 0,
-    gravity: 0.5,
+    gravity: 1.5,
     jumpStrength: -20,
     isJumping: false,
 };
 
+// Obstacles settings
 let obstacles: any[] = [];
 let frameCount = 0;
 const obstacleFrequency = 120;
 
 function drawPlayer() {
     if (ctx) {
+        const playerX = lanes[player.laneIndex] - player.width / 2;  // Calculate X based on the current lane
         ctx.fillStyle = player.color;
-        ctx.fillRect(player.x, player.y, player.width, player.height);
+        ctx.fillRect(playerX, player.y, player.width, player.height);
     }
 }
 
 function createObstacle() {
-    const height = Math.random() * 100 + 50;
     const width = 30;
-    const x = canvas.width;
-    const y = canvas.height - height;
+    const height = 30;
+    const laneIndex = Math.floor(Math.random() * 3);  // Random lane (0, 1, or 2)
+    const x = lanes[laneIndex] - width / 2;  // Place obstacle in the center of the selected lane
+    const y = 0 - height;  // Start above the screen
 
-    obstacles.push({ x, y, width, height, color: 'red' });
+    obstacles.push({ x, y, width, height, color: 'red', laneIndex });
 }
 
 function drawObstacles() {
     obstacles.forEach(obstacle => {
         if (ctx) {
-
             ctx.fillStyle = obstacle.color;
             ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            obstacle.x -= 5;
+            obstacle.y += 5;  // Move the obstacle down
 
-            // Remove obstacles off screen
-            if (obstacle.x + obstacle.width < 0) {
+            // Remove obstacles that fall off the bottom of the screen
+            if (obstacle.y > canvas.height) {
                 obstacles.shift();
             }
         }
@@ -74,16 +85,33 @@ function jump() {
     }
 }
 
+function moveLeft() {
+    if (player.laneIndex > 0) {
+        player.laneIndex--;  // Move to the left lane
+    }
+}
+
+function moveRight() {
+    if (player.laneIndex < 2) {
+        player.laneIndex++;  // Move to the right lane
+    }
+}
+
 function detectCollision() {
+    const playerX = lanes[player.laneIndex] - player.width / 2;
+
     obstacles.forEach(obstacle => {
-        if (
-            player.x < obstacle.x + obstacle.width &&
-            player.x + player.width > obstacle.x &&
-            player.y < obstacle.y + obstacle.height &&
-            player.y + player.height > obstacle.y
-        ) {
-            alert("Game Over!");
-            resetGame();
+        // Only detect collision when the player is NOT jumping
+        if (!player.isJumping) {
+            if (
+                playerX < obstacle.x + obstacle.width &&
+                playerX + player.width > obstacle.x &&
+                player.y < obstacle.y + obstacle.height &&
+                player.y + player.height > obstacle.y
+            ) {
+                alert("Game Over!");
+                resetGame();
+            }
         }
     });
 }
@@ -91,13 +119,13 @@ function detectCollision() {
 function resetGame() {
     player.y = canvas.height - player.height;
     player.dy = 0;
+    player.laneIndex = 1;  // Reset to the middle lane
     obstacles = [];
     frameCount = 0;
 }
 
 function gameLoop() {
     if (ctx) {
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         drawPlayer();
@@ -114,9 +142,16 @@ function gameLoop() {
     }
 }
 
+// Add event listener for lane switching and jumping
 window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
         jump();
+    }
+    if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+        moveLeft();
+    }
+    if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+        moveRight();
     }
 });
 
