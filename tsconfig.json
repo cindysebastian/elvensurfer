@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "ES5",
+      "module": "commonjs",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "lib": ["dom", "es5"],
+      "skipLibCheck": true // Skips type checking of all declaration files
+    },
+    "exclude": [
+      "node_modules/@types/text-encoding"
+    ]
+  }
+  

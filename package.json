@@ -1,0 +1,12 @@
+{
+    "name": "subway-surfer-clone",
+    "version": "1.0.0",
+    "description": "A simple endless runner game built using TypeScript.",
+    "main": "index.html",
+    "scripts": {
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "typescript": "^4.9.5"
+    }
+}
