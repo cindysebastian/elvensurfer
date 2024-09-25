@@ -16,6 +16,17 @@ const lanes = [
     laneWidth * 2.5   // Center of the third lane
 ];
 
+// Use relative paths correctly
+const playerSprite = new Image();
+playerSprite.src = '../assets/legolas.png';
+
+const obstacleSprite = new Image();
+obstacleSprite.src = '../assets/orc.png';
+
+// Fallback flags
+let playerSpriteLoaded = false;
+let obstacleSpriteLoaded = false;
+
 // Player settings
 let player = {
     laneIndex: 1,  // Start in the middle lane
@@ -35,10 +46,15 @@ let frameCount = 0;
 const obstacleFrequency = 120;
 
 function drawPlayer() {
+    const playerX = lanes[player.laneIndex] - player.width / 2;  // Calculate X based on the current lane
     if (ctx) {
-        const playerX = lanes[player.laneIndex] - player.width / 2;  // Calculate X based on the current lane
-        ctx.fillStyle = player.color;
-        ctx.fillRect(playerX, player.y, player.width, player.height);
+        if (playerSpriteLoaded) {
+            ctx.drawImage(playerSprite, playerX, player.y, player.width, player.height);
+        } else {
+            // Draw the player rectangle as a backup
+            ctx.fillStyle = player.color;
+            ctx.fillRect(playerX, player.y, player.width, player.height);
+        }
     }
 }
 
@@ -49,14 +65,21 @@ function createObstacle() {
     const x = lanes[laneIndex] - width / 2;  // Place obstacle in the center of the selected lane
     const y = 0 - height;  // Start above the screen
 
-    obstacles.push({ x, y, width, height, color: 'red', laneIndex });
+    obstacles.push({ x, y, width, height, laneIndex });
 }
 
 function drawObstacles() {
     obstacles.forEach(obstacle => {
+        const obstacleX = obstacle.x;
+        const obstacleY = obstacle.y;
         if (ctx) {
-            ctx.fillStyle = obstacle.color;
-            ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            if (obstacleSpriteLoaded) {
+                ctx.drawImage(obstacleSprite, obstacleX, obstacleY, obstacle.width, obstacle.height);
+            } else {
+                // Draw the obstacle rectangle as a backup
+                ctx.fillStyle = 'red';
+                ctx.fillRect(obstacleX, obstacleY, obstacle.width, obstacle.height);
+            }
             obstacle.y += 5;  // Move the obstacle down
 
             // Remove obstacles that fall off the bottom of the screen
@@ -155,4 +178,22 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// Start the game once the sprites are loaded
+playerSprite.onload = () => {
+    playerSpriteLoaded = true;
+};
+
+playerSprite.onerror = () => {
+    console.error('Failed to load player sprite. Using backup rectangle.');
+};
+
+obstacleSprite.onload = () => {
+    obstacleSpriteLoaded = true;
+};
+
+obstacleSprite.onerror = () => {
+    console.error('Failed to load obstacle sprite. Using backup rectangle.');
+};
+
+// Start the game loop
 gameLoop();
