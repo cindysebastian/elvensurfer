@@ -16,12 +16,12 @@ const lanes = [
     laneWidth * 2.5   // Center of the third lane
 ];
 
-// Use relative paths correctly
+// Load Sprites
 const playerSprite = new Image();
-playerSprite.src = '../assets/legolas.png';
+playerSprite.src = '../assets/legolas.png'; // Replace with the path to your player sprite
 
 const obstacleSprite = new Image();
-obstacleSprite.src = '../assets/orc.png';
+obstacleSprite.src = '../assets/orc.png'; // Replace with the path to your obstacle sprite
 
 // Fallback flags
 let playerSpriteLoaded = false;
@@ -45,6 +45,10 @@ let obstacles: any[] = [];
 let frameCount = 0;
 const obstacleFrequency = 120;
 
+// Score counter
+let score = 0;
+
+// Draw player
 function drawPlayer() {
     const playerX = lanes[player.laneIndex] - player.width / 2;  // Calculate X based on the current lane
     if (ctx) {
@@ -58,6 +62,7 @@ function drawPlayer() {
     }
 }
 
+// Create obstacle
 function createObstacle() {
     const width = 30;
     const height = 30;
@@ -68,6 +73,7 @@ function createObstacle() {
     obstacles.push({ x, y, width, height, laneIndex });
 }
 
+// Draw obstacles
 function drawObstacles() {
     obstacles.forEach(obstacle => {
         const obstacleX = obstacle.x;
@@ -82,14 +88,16 @@ function drawObstacles() {
             }
             obstacle.y += 5;  // Move the obstacle down
 
-            // Remove obstacles that fall off the bottom of the screen
+            // Check if the obstacle is below the bottom of the canvas
             if (obstacle.y > canvas.height) {
-                obstacles.shift();
+                obstacles.shift(); // Remove the obstacle
+                score++; // Increment score when passing an obstacle
             }
         }
     });
 }
 
+// Handle player movement
 function handlePlayerMovement() {
     player.y += player.dy;
     player.dy += player.gravity;
@@ -101,6 +109,7 @@ function handlePlayerMovement() {
     }
 }
 
+// Jump function
 function jump() {
     if (!player.isJumping) {
         player.dy = player.jumpStrength;
@@ -108,18 +117,21 @@ function jump() {
     }
 }
 
+// Move player left
 function moveLeft() {
     if (player.laneIndex > 0) {
         player.laneIndex--;  // Move to the left lane
     }
 }
 
+// Move player right
 function moveRight() {
     if (player.laneIndex < 2) {
         player.laneIndex++;  // Move to the right lane
     }
 }
 
+// Detect collision
 function detectCollision() {
     const playerX = lanes[player.laneIndex] - player.width / 2;
 
@@ -132,21 +144,33 @@ function detectCollision() {
                 player.y < obstacle.y + obstacle.height &&
                 player.y + player.height > obstacle.y
             ) {
-                alert("Game Over!");
+                alert("Game Over! Final Score: " + score);
                 resetGame();
             }
         }
     });
 }
 
+// Reset game
 function resetGame() {
     player.y = canvas.height - player.height;
     player.dy = 0;
     player.laneIndex = 1;  // Reset to the middle lane
     obstacles = [];
     frameCount = 0;
+    score = 0; // Reset score
 }
 
+// Draw score
+function drawScore() {
+    if(ctx){
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Score: ' + score, 10, 20); // Display score in the top-left corner
+}
+}
+
+// Game loop
 function gameLoop() {
     if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -160,6 +184,7 @@ function gameLoop() {
             createObstacle();
         }
         drawObstacles();
+        drawScore(); // Draw the score
 
         requestAnimationFrame(gameLoop);
     }
