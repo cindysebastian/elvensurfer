@@ -246,8 +246,8 @@ function setupWebcam() {
                             // Set canvas to match video dimensions
                             canvas.width = video_1.videoWidth;
                             canvas.height = video_1.videoHeight;
-                            // Capture and update snapshot every 5 seconds
-                            setInterval(function () { return updateSnapshot(video_1); }, 5000);
+                            // Capture and update snapshot in the here specified interval
+                            setInterval(function () { return updateSnapshot(video_1); }, 1000);
                         }
                     };
                     return [3 /*break*/, 3];
@@ -276,7 +276,7 @@ function gameLoop() {
     drawScore(); // Draw the score on HUD canvas
     requestAnimationFrame(gameLoop);
 }
-// Add event listener for lane switching and jumping
+// Add event listener for lane switching and jumping via Keyboard
 window.addEventListener('keydown', function (e) {
     if (e.code === 'Space') {
         jump();

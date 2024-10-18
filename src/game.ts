@@ -50,7 +50,7 @@ let player = {
     y: gameCanvas.height,
     width: 50,
     height: 50,
-    color: 'blue',
+    color: 'blue',//Fallback if image does not load
     dy: 0,
     gravity: 1.5,
     jumpStrength: -20,
@@ -232,8 +232,8 @@ async function setupWebcam() {
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
 
-                // Capture and update snapshot every 5 seconds
-                setInterval(() => updateSnapshot(video), 5000);
+                // Capture and update snapshot in the here specified interval
+                setInterval(() => updateSnapshot(video), 1000);
             }
         };
     } catch (error) {
@@ -262,7 +262,7 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Add event listener for lane switching and jumping
+// Add event listener for lane switching and jumping via Keyboard
 window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
         jump();
