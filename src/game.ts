@@ -1,15 +1,32 @@
-const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d');
+const gameCanvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+const gameCtx = gameCanvas.getContext('2d');
 
-if (!ctx) {
+const hudCanvas = document.getElementById('webcamCanvas') as HTMLCanvasElement;
+const hudCtx = hudCanvas.getContext('2d');
+
+if (!gameCtx || !hudCtx) {
     throw new Error('Failed to get 2D context');
 }
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Function to resize the game canvas based on the bottom stripe height
+function resizeCanvases() {
+    const bottomStripe = document.getElementById('HUD') as HTMLDivElement; // Get the bottom stripe element
+    const bottomStripeHeight = bottomStripe.getBoundingClientRect().height; // Get its height
+    gameCanvas.width = window.innerWidth; // Set the game canvas width to match the window width
+    gameCanvas.height = window.innerHeight - bottomStripeHeight; // Set the game canvas height dynamically
+
+    hudCanvas.width = window.innerWidth; // Set the HUD canvas width to match the window width
+    hudCanvas.height = bottomStripeHeight; // Set the HUD canvas height
+}
+
+// Initial canvas setup
+resizeCanvases();
+
+// Add event listener for resizing
+window.addEventListener('resize', resizeCanvases);
 
 // Define the lanes
-const laneWidth = canvas.width / 3; // Divide the canvas into 3 equal lanes
+const laneWidth = gameCanvas.width / 3; // Divide the canvas into 3 equal lanes
 const lanes = [
     laneWidth * 0.5,  // Center of the first lane
     laneWidth * 1.5,  // Center of the second lane
@@ -30,7 +47,7 @@ let obstacleSpriteLoaded = false;
 // Player settings
 let player = {
     laneIndex: 1,  // Start in the middle lane
-    y: canvas.height - 150,
+    y: gameCanvas.height,
     width: 50,
     height: 50,
     color: 'blue',
@@ -41,7 +58,7 @@ let player = {
 };
 
 // Obstacles settings
-let obstacles: any[] = [];
+let obstacles: { x: number; y: number; width: number; height: number; laneIndex: number; }[] = [];
 let frameCount = 0;
 const obstacleFrequency = 120;
 
@@ -51,13 +68,13 @@ let score = 0;
 // Draw player
 function drawPlayer() {
     const playerX = lanes[player.laneIndex] - player.width / 2;  // Calculate X based on the current lane
-    if (ctx) {
+    if (gameCtx) {
         if (playerSpriteLoaded) {
-            ctx.drawImage(playerSprite, playerX, player.y, player.width, player.height);
+            gameCtx.drawImage(playerSprite, playerX, player.y, player.width, player.height);
         } else {
             // Draw the player rectangle as a backup
-            ctx.fillStyle = player.color;
-            ctx.fillRect(playerX, player.y, player.width, player.height);
+            gameCtx.fillStyle = player.color;
+            gameCtx.fillRect(playerX, player.y, player.width, player.height);
         }
     }
 }
@@ -78,18 +95,18 @@ function drawObstacles() {
     obstacles.forEach(obstacle => {
         const obstacleX = obstacle.x;
         const obstacleY = obstacle.y;
-        if (ctx) {
+        if (gameCtx) {
             if (obstacleSpriteLoaded) {
-                ctx.drawImage(obstacleSprite, obstacleX, obstacleY, obstacle.width, obstacle.height);
+                gameCtx.drawImage(obstacleSprite, obstacleX, obstacleY, obstacle.width, obstacle.height);
             } else {
                 // Draw the obstacle rectangle as a backup
-                ctx.fillStyle = 'red';
-                ctx.fillRect(obstacleX, obstacleY, obstacle.width, obstacle.height);
+                gameCtx.fillStyle = 'red';
+                gameCtx.fillRect(obstacleX, obstacleY, obstacle.width, obstacle.height);
             }
             obstacle.y += 5;  // Move the obstacle down
 
             // Check if the obstacle is below the bottom of the canvas
-            if (obstacle.y > canvas.height) {
+            if (obstacle.y > gameCanvas.height) {
                 obstacles.shift(); // Remove the obstacle
                 score++; // Increment score when passing an obstacle
             }
@@ -102,8 +119,8 @@ function handlePlayerMovement() {
     player.y += player.dy;
     player.dy += player.gravity;
 
-    if (player.y + player.height > canvas.height) {
-        player.y = canvas.height - player.height;
+    if (player.y + player.height > gameCanvas.height) {
+        player.y = gameCanvas.height - player.height;
         player.isJumping = false;
         player.dy = 0;
     }
@@ -153,7 +170,7 @@ function detectCollision() {
 
 // Reset game
 function resetGame() {
-    player.y = canvas.height - player.height;
+    player.y = gameCanvas.height - player.height;
     player.dy = 0;
     player.laneIndex = 1;  // Reset to the middle lane
     obstacles = [];
@@ -163,17 +180,71 @@ function resetGame() {
 
 // Draw score
 function drawScore() {
-    if(ctx){
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText('Score: ' + score, 10, 20); // Display score in the top-left corner
+    const scoreElement = document.getElementById('score')!;
+    scoreElement.textContent = 'Score: ' + score; // Update the score text dynamically
 }
+
+// Capture movement from the webcam feed
+async function captureMovement(video: HTMLVideoElement, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    const width = canvas.width;
+    const height = canvas.height;
+
+    if (width <= 0 || height <= 0) {
+        console.error('Invalid canvas dimensions');
+        return;
+    }
+
+    try {
+        ctx.drawImage(video, 0, 0, width, height);
+        const imageData = ctx.getImageData(0, 0, width, height);
+
+        // Process imageData for movement detection
+        // Implement movement logic based on image processing here
+
+    } catch (error) {
+        console.error('Error during captureMovement:', error);
+    }
+}
+
+// Take a snapshot and update the HUD canvas
+function updateSnapshot(video: HTMLVideoElement) {
+    const width = hudCanvas.width;
+    const height = hudCanvas.height;
+
+    if (hudCtx) {
+        // Resize canvas to the webcam dimensions if needed
+        hudCtx.drawImage(video, 0, 0, width, height);
+    }
+}
+
+// Set up the webcam feed
+async function setupWebcam() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById('webcam') as HTMLVideoElement;
+        video.srcObject = stream;
+
+        video.onloadedmetadata = () => {
+            const canvas = document.getElementById('webcamCanvas') as HTMLCanvasElement;
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                // Set canvas to match video dimensions
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                // Capture and update snapshot every 5 seconds
+                setInterval(() => updateSnapshot(video), 5000);
+            }
+        };
+    } catch (error) {
+        console.error('Webcam setup error:', error);
+    }
 }
 
 // Game loop
 function gameLoop() {
-    if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (gameCtx) {
+        gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
         drawPlayer();
         handlePlayerMovement();
@@ -184,10 +255,11 @@ function gameLoop() {
             createObstacle();
         }
         drawObstacles();
-        drawScore(); // Draw the score
-
-        requestAnimationFrame(gameLoop);
     }
+
+    drawScore(); // Draw the score on HUD canvas
+
+    requestAnimationFrame(gameLoop);
 }
 
 // Add event listener for lane switching and jumping
@@ -220,5 +292,6 @@ obstacleSprite.onerror = () => {
     console.error('Failed to load obstacle sprite. Using backup rectangle.');
 };
 
-// Start the game loop
+// Start the game loop and webcam setup
 gameLoop();
+setupWebcam();
