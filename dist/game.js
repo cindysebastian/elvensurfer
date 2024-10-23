@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,6 +34,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+// main game file (e.g., game.ts)
+import { PlayerController } from './components/player.js';
 var gameCanvas = document.getElementById('gameCanvas');
 var gameCtx = gameCanvas.getContext('2d');
 var hudCanvas = document.getElementById('webcamCanvas');
@@ -70,18 +71,8 @@ obstacleSprite.src = '../assets/orc.png'; // Replace with the path to your obsta
 // Fallback flags
 var playerSpriteLoaded = false;
 var obstacleSpriteLoaded = false;
-// Player settings
-var player = {
-    laneIndex: 1,
-    y: gameCanvas.height,
-    width: 50,
-    height: 50,
-    color: 'blue',
-    dy: 0,
-    gravity: 1.5,
-    jumpStrength: -20,
-    isJumping: false,
-};
+// Instantiate PlayerController
+var playerController = new PlayerController(lanes);
 // Obstacles settings
 var obstacles = [];
 var frameCount = 0;
@@ -90,16 +81,8 @@ var obstacleFrequency = 120;
 var score = 0;
 // Draw player
 function drawPlayer() {
-    var playerX = lanes[player.laneIndex] - player.width / 2; // Calculate X based on the current lane
     if (gameCtx) {
-        if (playerSpriteLoaded) {
-            gameCtx.drawImage(playerSprite, playerX, player.y, player.width, player.height);
-        }
-        else {
-            // Draw the player rectangle as a backup
-            gameCtx.fillStyle = player.color;
-            gameCtx.fillRect(playerX, player.y, player.width, player.height);
-        }
+        playerController.draw(gameCtx, playerSpriteLoaded ? playerSprite : null, playerSpriteLoaded);
     }
 }
 // Create obstacle
@@ -136,35 +119,23 @@ function drawObstacles() {
 }
 // Handle player movement
 function handlePlayerMovement() {
-    player.y += player.dy;
-    player.dy += player.gravity;
-    if (player.y + player.height > gameCanvas.height) {
-        player.y = gameCanvas.height - player.height;
-        player.isJumping = false;
-        player.dy = 0;
-    }
+    playerController.handleMovement();
 }
 // Jump function
 function jump() {
-    if (!player.isJumping) {
-        player.dy = player.jumpStrength;
-        player.isJumping = true;
-    }
+    playerController.jump();
 }
 // Move player left
 function moveLeft() {
-    if (player.laneIndex > 0) {
-        player.laneIndex--; // Move to the left lane
-    }
+    playerController.moveLeft();
 }
 // Move player right
 function moveRight() {
-    if (player.laneIndex < 2) {
-        player.laneIndex++; // Move to the right lane
-    }
+    playerController.moveRight();
 }
 // Detect collision
 function detectCollision() {
+    var player = playerController.getPlayer();
     var playerX = lanes[player.laneIndex] - player.width / 2;
     obstacles.forEach(function (obstacle) {
         // Only detect collision when the player is NOT jumping
@@ -181,9 +152,7 @@ function detectCollision() {
 }
 // Reset game
 function resetGame() {
-    player.y = gameCanvas.height - player.height;
-    player.dy = 0;
-    player.laneIndex = 1; // Reset to the middle lane
+    playerController.reset();
     obstacles = [];
     frameCount = 0;
     score = 0; // Reset score

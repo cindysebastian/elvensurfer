@@ -4,7 +4,8 @@
     "description": "A simple endless runner game built using TypeScript.",
     "main": "index.html",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "postbuild": "copyfiles -u 1 src/index.html src/styles.css dist"
     },
     "devDependencies": {
         "typescript": "^4.9.5"

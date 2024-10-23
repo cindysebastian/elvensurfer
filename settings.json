@@ -1,0 +1,17 @@
+{
+    "liveServer.settings.port": 8080, // The port Live Server will run on
+    "liveServer.settings.root": "/", // The root directory for your project
+    "liveServer.settings.open": true, // Open the browser automatically when starting the server
+    "liveServer.settings.ignoreFiles": [
+        "**/*.scss",
+        "**/*.sass"
+    ], // Files to ignore
+    "liveServer.settings.watch": true, // Automatically refresh when files change
+    "liveServer.settings.middleware": {
+        // Custom middleware, if any
+    },
+    "files.autoSave": "onWindowChange", // Save files automatically on window change
+    "editor.formatOnSave": true, // Automatically format files on save
+    "editor.tabSize": 4, // Set tab size
+    "editor.insertSpaces": true // Use spaces instead of tabs
+}
