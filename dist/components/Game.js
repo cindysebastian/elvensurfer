@@ -7,8 +7,6 @@ var Game = /** @class */ (function () {
         this.hudCtx = webcamCanvas.getContext('2d');
         this.gameCanvas.width = window.innerWidth; // Set the width to the window's inner width
         this.gameCanvas.height = window.innerHeight * 0.75; // Set height to 75% of the window's inner height
-        console.log(this.gameCanvas.width);
-        console.log(this.gameCanvas.height);
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
@@ -21,16 +19,11 @@ var Game = /** @class */ (function () {
         ];
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
-        this.countdown = 3; // Initialize countdown
-        this.countdownInterval = null; // No countdown interval set
         this.gameStarted = false; // Game has not started
         this.startPromptElement = document.getElementById('startPrompt'); // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;
     }
-    Game.prototype.resetCountdown = function () {
-        this.countdown = 3; // Reset countdown value
-    };
     Game.prototype.createObstacle = function () {
         if (!this.isActive)
             return; // Do not create obstacles if the game is not active
@@ -100,8 +93,6 @@ var Game = /** @class */ (function () {
         var scoreElement = document.getElementById('score');
         scoreElement.textContent = 'Score: ' + this.score;
     };
-    Game.prototype.startGame = function () {
-    };
     Game.prototype.pauseGame = function () {
         this.isActive = false; // Set game as inactive
         this.showStartPrompt(); // Show prompt to hold W key to start again
@@ -120,23 +111,6 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.hideStartPrompt = function () {
         this.startPromptElement.style.display = 'none'; // Hide the prompt
-    };
-    Game.prototype.startCountdown = function () {
-        var _this = this;
-        if (!this.gameStarted) {
-            this.countdownInterval = setInterval(function () {
-                if (_this.countdown > 0) {
-                    console.log("Countdown: ".concat(_this.countdown)); // Display the countdown in the console
-                    _this.countdown--;
-                }
-                else {
-                    console.log("Game Start");
-                    _this.gameStarted = true; // Mark game as started
-                    _this.start();
-                    clearInterval(_this.countdownInterval); // Start the game (you may need to implement this method)
-                }
-            }, 1000);
-        }
     };
     Game.prototype.start = function () {
         this.isGameOver = false; // Ensure the game is not over

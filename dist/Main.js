@@ -24,14 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === 'w') {
             keyHeldDown = false; // Reset the key held down flag
             game.pauseGame(); // Pause the game when W is released
-            game.resetCountdown(); // Reset countdown state in Game class
         }
     });
     function startCountdown() {
         console.log("Starting Countdown");
         // Reset the countdown display
-        countdownElement.textContent = "Game starting in ".concat(game.countdown, "...");
-        game.countdownInterval = setInterval(function () {
+        countdownElement.textContent = "Game starting in ".concat(countdown, "...");
+        var countdownInterval = setInterval(function () {
             if (keyHeldDown) {
                 if (countdown > 0) {
                     console.log("Countdown: ".concat(countdown)); // Display the countdown in the console
@@ -39,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     countdown--;
                 }
                 else {
-                    clearInterval(game.countdownInterval);
+                    clearInterval(countdownInterval);
                     game.start(); // Start the game
                     countdownElement.style.display = 'none'; // Hide the countdown element
                     game.hideStartPrompt(); // Hide the start prompt
@@ -47,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             else {
                 console.log("Did not Hold Input long enough");
-                clearInterval(game.countdownInterval); // Stop the countdown
+                clearInterval(countdownInterval); // Stop the countdown
                 countdown = 3; // Reset countdown or handle as needed
                 countdownElement.textContent = "Hold down W to start!";
             }
