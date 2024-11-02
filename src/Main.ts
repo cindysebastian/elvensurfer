@@ -42,8 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keyup', (event) => {
         if (event.key === 'w') {
             keyHeldDown = false;
-            game.pauseGame(); // Pause the game when W is released
+             // Pause the game when W is released
             resetCountdown(); // Reset the countdown in case it was interrupted
+            if(game.isActive){
+                game.pauseGame();
+            }
         }
     });
 
