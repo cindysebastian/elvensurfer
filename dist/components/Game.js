@@ -1,5 +1,4 @@
-// Game.ts
-import { Player } from './Player.js';
+import { Player } from './player.js';
 var Game = /** @class */ (function () {
     function Game(gameCanvas, webcamCanvas, gameController) {
         this.gameCanvas = gameCanvas;
@@ -22,20 +21,22 @@ var Game = /** @class */ (function () {
         ];
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
+        this.countdown = 3; // Initialize countdown
+        this.countdownInterval = null; // No countdown interval set
+        this.gameStarted = false; // Game has not started
     }
     Game.prototype.createObstacle = function () {
         var testWidth = this.gameCanvas.width * 0.1;
         var testHeight = this.gameCanvas.height * 0.1;
-        // Declare width and height outside of the conditional blocks
         var width;
         var height;
         if (testHeight < testWidth) {
             width = testWidth;
-            height = width; // Setting height equal to width in this case
+            height = width;
         }
         else {
             height = testHeight;
-            width = height; // Setting width equal to height in this case
+            width = height;
         }
         var laneIndex = Math.floor(Math.random() * 3);
         var x = this.lanes[laneIndex] - width / 2;
@@ -43,7 +44,7 @@ var Game = /** @class */ (function () {
         this.obstacles.push({ x: x, y: y, width: width, height: height, laneIndex: laneIndex });
     };
     Game.prototype.drawPlayer = function (playerSprite, playerSpriteLoaded) {
-        var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2; // Calculate player X position based on lane
+        var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
         if (playerSpriteLoaded) {
             this.gameCtx.drawImage(playerSprite, playerX, this.player.y, this.player.width, this.player.height);
         }
@@ -54,7 +55,7 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.drawObstacles = function (obstacleSprite, obstacleSpriteLoaded) {
         var _this = this;
-        var obstacleSpeed = 8; // Increase this value to make obstacles move faster
+        var obstacleSpeed = 8; // Speed of the obstacles
         this.obstacles.forEach(function (obstacle) {
             if (obstacleSpriteLoaded) {
                 _this.gameCtx.drawImage(obstacleSprite, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
@@ -63,8 +64,7 @@ var Game = /** @class */ (function () {
                 _this.gameCtx.fillStyle = 'red';
                 _this.gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             }
-            obstacle.y += obstacleSpeed; // Use the speed variable here
-            // Remove obstacles that have moved off the bottom of the canvas
+            obstacle.y += obstacleSpeed; // Move obstacles down
             if (obstacle.y > _this.gameCanvas.height) {
                 _this.obstacles.shift();
                 _this.score++;
@@ -98,6 +98,30 @@ var Game = /** @class */ (function () {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
+    };
+    Game.prototype.startCountdown = function () {
+        var _this = this;
+        if (!this.gameStarted) {
+            this.countdownInterval = setInterval(function () {
+                if (_this.countdown > 0) {
+                    console.log("Countdown: ".concat(_this.countdown)); // Display the countdown in the console
+                    _this.countdown--;
+                }
+                else {
+                    clearInterval(_this.countdownInterval);
+                    _this.gameStarted = true; // Mark game as started
+                    _this.start(); // Start the game (you may need to implement this method)
+                }
+            }, 1000);
+        }
+    };
+    Game.prototype.start = function () {
+        // Implement any logic you need to initiate the game loop here
+        this.isGameOver = false; // Ensure the game is not over
+        this.frameCount = 0; // Reset frame count
+        this.score = 0; // Reset score
+        this.obstacles = []; // Clear existing obstacles
+        // Any other initial setup for starting the game can be done here
     };
     return Game;
 }());

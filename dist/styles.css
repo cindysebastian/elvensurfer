@@ -47,3 +47,23 @@ body, html {
     font-size: 40px; /* Font size for score display */
     font-family:"Brush Script MT", fantasy;
 }
+
+
+#initial-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+}
+
+#text-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#countdown {
+    font-size: 30px;
+}
