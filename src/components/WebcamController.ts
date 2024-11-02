@@ -18,8 +18,6 @@ export class WebcamController {
             this.video.srcObject = stream;
     
             this.video.onloadedmetadata = () => {
-                this.canvas.width = this.video.videoWidth;
-                this.canvas.height = this.video.videoHeight;
                 this.captureMovement(); // Start the capture loop
             };
         } catch (error) {
@@ -39,7 +37,7 @@ export class WebcamController {
         }
     
         try {
-            this.ctx.drawImage(this.video, 0, 0, width, height);
+            //this.ctx.drawImage(this.video, 0, 0, width, height);
             const imageData = this.ctx.getImageData(0, 0, width, height);
     
             // Process imageData for movement detection here

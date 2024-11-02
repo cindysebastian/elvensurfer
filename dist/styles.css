@@ -1,11 +1,13 @@
 /* styles.css */
 
 /* Reset some default styles */
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* Prevent scrolling */
+    overflow: hidden;
+    /* Prevent scrolling */
     color: white;
 }
 
@@ -13,10 +15,11 @@ body, html {
 #gameCanvas {
     display: block;
     width: 100%;
-    height: 75%; /* Adjust height to leave space for HUD */
+    height: 75%;
+    /* Adjust height to leave space for HUD */
 }
 
-#logo{
+#logo {
     width: 50%;
     display: block;
     top: 5%;
@@ -26,30 +29,47 @@ body, html {
 /* HUD styles */
 #hud {
     display: none;
-    justify-content: space-between; /* Space out the score and webcam */
-    align-items: center; /* Center align items vertically */
-    padding: 10px; /* Padding around the HUD */
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background for visibility */
-    color: white; /* Text color */
+    justify-content: space-between;
+    /* Space out the score and webcam */
+    align-items: center;
+    /* Center align items vertically */
+    padding: 10px;
+    /* Padding around the HUD */
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Semi-transparent background for visibility */
+    color: white;
+    /* Text color */
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%; /* Full width of the viewport */
-    height: 20%; /* Fixed height for HUD */
+    width: 100%;
+    /* Full width of the viewport */
+    height: 20%;
+    /* Fixed height for HUD */
 }
 
 #game-over-overlay {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    top: 0; /* Stay on top */
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    top: 0;
+    /* Stay on top */
     left: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgba(0, 0, 0, 0.8); /* Black background with some transparency */
-    color: white; /* White text color */
-    text-align: center; /* Center text */
-    padding-top: 20%; /* Add some space from the top */
-    z-index: 1000; /* Ensure it sits on top of other content */
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Black background with some transparency */
+    color: white;
+    /* White text color */
+    text-align: center;
+    /* Center text */
+    padding-top: 20%;
+    /* Add some space from the top */
+    z-index: 1000;
+    /* Ensure it sits on top of other content */
 }
 
 
@@ -58,19 +78,25 @@ body, html {
 }
 
 /* Styles for webcam and webcamCanvas */
-#webcam, #webcamCanvas {
-    width: auto; /* Make them responsive */
-    height: 100%; /* Match the height of the HUD */
+#webcam,
+#webcamCanvas {
+    width: auto;
+    /* Make them responsive */
+    height: 100%;
+    /* Match the height of the HUD */
     padding-right: 50px;
 }
 
 /* Score styling */
 #score {
-    margin-left: 10px; /* Spacing from the left */
-    font-size: 40px; /* Font size for score display */
-    font-family:"Brush Script MT", fantasy;
+    margin-left: 10px;
+    /* Spacing from the left */
+    font-size: 40px;
+    /* Font size for score display */
+    font-family: "Brush Script MT", fantasy;
 }
-#pausePrompt{
+
+#pausePrompt {
     position: absolute;
     color: white;
     width: 100%;
@@ -89,9 +115,9 @@ body, html {
     color: white;
 }
 
-#start-text{
+#start-text {
     position: absolute;
-    bottom: 10%;
+    bottom: 8%;
     text-align: center;
 }
 
@@ -101,8 +127,20 @@ body, html {
     bottom: 50%;
     text-align: center;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Black background with some transparency */
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Black background with some transparency */
     height: 10%;
     z-index: 9999999;
     display: none;
+}
+
+#initCamCanvas {
+    position: absolute;
+    height: 100vh;
+    margin: 5%;
+}
+
+#initWebcam {
+    height: 70%;
+
 }

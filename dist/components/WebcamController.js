@@ -55,8 +55,6 @@ var WebcamController = /** @class */ (function () {
                         stream = _a.sent();
                         this.video.srcObject = stream;
                         this.video.onloadedmetadata = function () {
-                            _this.canvas.width = _this.video.videoWidth;
-                            _this.canvas.height = _this.video.videoHeight;
                             _this.captureMovement(); // Start the capture loop
                         };
                         return [3 /*break*/, 3];
@@ -79,7 +77,7 @@ var WebcamController = /** @class */ (function () {
             return;
         }
         try {
-            this.ctx.drawImage(this.video, 0, 0, width, height);
+            //this.ctx.drawImage(this.video, 0, 0, width, height);
             var imageData = this.ctx.getImageData(0, 0, width, height);
             // Process imageData for movement detection here
         }
