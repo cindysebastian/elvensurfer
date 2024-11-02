@@ -15,6 +15,13 @@ body, html {
     height: 75%; /* Adjust height to leave space for HUD */
 }
 
+#logo{
+    width: 50%;
+    display: block;
+    top: 5%;
+    position: absolute;
+}
+
 /* HUD styles */
 #hud {
     display: none;

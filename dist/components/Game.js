@@ -112,6 +112,7 @@ var Game = /** @class */ (function () {
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
         this.HUD.style.display = 'none';
+        this.hidePausePrompt();
     };
     Game.prototype.showPausePrompt = function () {
         this.startPromptElement.style.display = 'block'; // Show the prompt

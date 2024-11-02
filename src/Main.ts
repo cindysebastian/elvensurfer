@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     clearInterval(countdownInterval);
                     game.resetGame(); // Reset the game
                     if (initScreen) {
-                        initScreen.style.display = 'block'; // Show initial screen
+                        initScreen.style.display = 'flex'; // Show initial screen
                     }
                     isResetting = false; // Reset the mode
                     resetCountdown(); // Reset countdown for the next action
