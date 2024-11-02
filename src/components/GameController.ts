@@ -10,7 +10,7 @@ export class GameController {
     obstacleSprite!: HTMLImageElement;
     playerSpriteLoaded: boolean = false;
     obstacleSpriteLoaded: boolean = false;
-    obstacleFrequency: number = 120;
+    obstacleFrequency: number = 100;
 
     constructor() {
         // No need to initialize game here yet
@@ -36,7 +36,7 @@ export class GameController {
             this.game.gameCtx.clearRect(0, 0, this.game.gameCanvas.width, this.game.gameCanvas.height);
 
             if (!this.game.isGameOver) {
-                this.game.player.updatePosition(this.game.gameCanvas.height);
+                
                 this.game.drawPlayer(this.playerSprite, this.playerSpriteLoaded);
 
                 if (this.game.frameCount % this.obstacleFrequency === 0) {

@@ -6,6 +6,10 @@ var Game = /** @class */ (function () {
         this.gameCtx = gameCanvas.getContext('2d');
         this.webcamCanvas = webcamCanvas;
         this.hudCtx = webcamCanvas.getContext('2d');
+        this.gameCanvas.width = window.innerWidth; // Set the width to the window's inner width
+        this.gameCanvas.height = window.innerHeight * 0.75; // Set height to 75% of the window's inner height
+        console.log(this.gameCanvas.width);
+        console.log(this.gameCanvas.height);
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
@@ -20,8 +24,19 @@ var Game = /** @class */ (function () {
         this.gameController = gameController; // Set the GameController instance
     }
     Game.prototype.createObstacle = function () {
-        var width = 15;
-        var height = 15;
+        var testWidth = this.gameCanvas.width * 0.1;
+        var testHeight = this.gameCanvas.height * 0.1;
+        // Declare width and height outside of the conditional blocks
+        var width;
+        var height;
+        if (testHeight < testWidth) {
+            width = testWidth;
+            height = width; // Setting height equal to width in this case
+        }
+        else {
+            height = testHeight;
+            width = height; // Setting width equal to height in this case
+        }
         var laneIndex = Math.floor(Math.random() * 3);
         var x = this.lanes[laneIndex] - width / 2;
         var y = -height;
@@ -39,6 +54,7 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.drawObstacles = function (obstacleSprite, obstacleSpriteLoaded) {
         var _this = this;
+        var obstacleSpeed = 8; // Increase this value to make obstacles move faster
         this.obstacles.forEach(function (obstacle) {
             if (obstacleSpriteLoaded) {
                 _this.gameCtx.drawImage(obstacleSprite, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
@@ -47,7 +63,8 @@ var Game = /** @class */ (function () {
                 _this.gameCtx.fillStyle = 'red';
                 _this.gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             }
-            obstacle.y += 2;
+            obstacle.y += obstacleSpeed; // Use the speed variable here
+            // Remove obstacles that have moved off the bottom of the canvas
             if (obstacle.y > _this.gameCanvas.height) {
                 _this.obstacles.shift();
                 _this.score++;

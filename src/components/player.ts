@@ -8,10 +8,12 @@ export class Player {
 
     constructor(canvasHeight: number) {
         this.laneIndex = 1; // Start in the middle lane
-        this.y = canvasHeight - 50; // Set player position
-        this.width = 20; // Width of the player
-        this.height = 20; // Height of the player
+        this.y = canvasHeight-canvasHeight*0.4; // Set player position
+        this.height = canvasHeight*0.3;
+        this.width = this.height*0.6139; // Width of the player
         this.color = 'blue'; // Color of the player
+        console.log("initiated player with width", this.width);
+        console.log("Canvas height when initialized", canvasHeight);
     }
 
     moveLeft() {
@@ -30,10 +32,8 @@ export class Player {
 
     center() {
         this.laneIndex = 1; // Center the player in the middle lane
+        console.log(this.y);
     }
 
-    updatePosition(canvasHeight: number) {
-        // Set y position based on lane index
-        this.y = canvasHeight - 50; // Always set to the bottom of the canvas minus height
-    }
+
 }

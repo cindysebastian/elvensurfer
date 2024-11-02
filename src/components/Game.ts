@@ -21,6 +21,12 @@ export class Game {
         this.gameCtx = gameCanvas.getContext('2d')!;
         this.webcamCanvas = webcamCanvas;
         this.hudCtx = webcamCanvas.getContext('2d')!;
+        this.gameCanvas.width = window.innerWidth; // Set the width to the window's inner width
+        this.gameCanvas.height = window.innerHeight * 0.75; // Set height to 75% of the window's inner height
+        console.log(this.gameCanvas.width);
+        console.log(this.gameCanvas.height);
+
+
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
@@ -36,8 +42,21 @@ export class Game {
     }
 
     createObstacle() {
-        const width = 15;
-        const height = 15;
+        const testWidth = this.gameCanvas.width * 0.1;
+        const testHeight = this.gameCanvas.height * 0.1;
+
+        // Declare width and height outside of the conditional blocks
+        let width: number;
+        let height: number;
+
+        if (testHeight < testWidth) {
+            width = testWidth;
+            height = width; // Setting height equal to width in this case
+        } else {
+            height = testHeight;
+            width = height; // Setting width equal to height in this case
+        }
+
         const laneIndex = Math.floor(Math.random() * 3);
         const x = this.lanes[laneIndex] - width / 2;
         const y = -height;
@@ -52,9 +71,11 @@ export class Game {
             this.gameCtx.fillStyle = this.player.color;
             this.gameCtx.fillRect(playerX, this.player.y, this.player.width, this.player.height);
         }
-    }    
+    }
 
     drawObstacles(obstacleSprite: HTMLImageElement, obstacleSpriteLoaded: boolean) {
+        const obstacleSpeed = 8; // Increase this value to make obstacles move faster
+    
         this.obstacles.forEach(obstacle => {
             if (obstacleSpriteLoaded) {
                 this.gameCtx.drawImage(obstacleSprite, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
@@ -62,14 +83,17 @@ export class Game {
                 this.gameCtx.fillStyle = 'red';
                 this.gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
             }
-            obstacle.y += 2;
-
+    
+            obstacle.y += obstacleSpeed; // Use the speed variable here
+    
+            // Remove obstacles that have moved off the bottom of the canvas
             if (obstacle.y > this.gameCanvas.height) {
                 this.obstacles.shift();
                 this.score++;
             }
         });
     }
+    
 
     detectCollision() {
         if (this.isGameOver) return; // Prevent collision detection if game is over
@@ -98,5 +122,5 @@ export class Game {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
-    }    
+    }
 }

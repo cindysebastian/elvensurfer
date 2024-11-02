@@ -4,7 +4,7 @@ var GameController = /** @class */ (function () {
     function GameController() {
         this.playerSpriteLoaded = false;
         this.obstacleSpriteLoaded = false;
-        this.obstacleFrequency = 120;
+        this.obstacleFrequency = 100;
         // No need to initialize game here yet
     }
     GameController.prototype.setGame = function (game) {
@@ -24,7 +24,6 @@ var GameController = /** @class */ (function () {
         var loop = function () {
             _this.game.gameCtx.clearRect(0, 0, _this.game.gameCanvas.width, _this.game.gameCanvas.height);
             if (!_this.game.isGameOver) {
-                _this.game.player.updatePosition(_this.game.gameCanvas.height);
                 _this.game.drawPlayer(_this.playerSprite, _this.playerSpriteLoaded);
                 if (_this.game.frameCount % _this.obstacleFrequency === 0) {
                     _this.game.createObstacle();
