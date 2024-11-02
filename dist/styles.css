@@ -1,0 +1,49 @@
+/* styles.css */
+
+/* Reset some default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent scrolling */
+}
+
+/* Style for the game canvas */
+#gameCanvas {
+    display: block;
+    width: 100%;
+    height: 75%; /* Adjust height to leave space for HUD */
+}
+
+/* HUD styles */
+#hud {
+    display: flex;
+    justify-content: space-between; /* Space out the score and webcam */
+    align-items: center; /* Center align items vertically */
+    padding: 10px; /* Padding around the HUD */
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background for visibility */
+    color: white; /* Text color */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Full width of the viewport */
+    height: 20%; /* Fixed height for HUD */
+}
+
+#camera {
+    height: 90%;
+}
+
+/* Styles for webcam and webcamCanvas */
+#webcam, #webcamCanvas {
+    width: auto; /* Make them responsive */
+    height: 100%; /* Match the height of the HUD */
+    padding-right: 50px;
+}
+
+/* Score styling */
+#score {
+    margin-left: 10px; /* Spacing from the left */
+    font-size: 40px; /* Font size for score display */
+    font-family:"Brush Script MT", fantasy;
+}

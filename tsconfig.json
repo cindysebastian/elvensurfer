@@ -1,15 +1,17 @@
 {
     "compilerOptions": {
       "target": "ES5",
-      "module": "commonjs",
+      "module": "ES6",
       "outDir": "./dist",
       "rootDir": "./src",
+      
       "strict": true,
-      "lib": ["dom", "es5"],
+      "lib": ["dom", "es5", "ES2015"],
       "skipLibCheck": true // Skips type checking of all declaration files
     },
     "exclude": [
       "node_modules/@types/text-encoding"
-    ]
+    ],
+    "include": ["src/**/*.ts"]
   }
   
