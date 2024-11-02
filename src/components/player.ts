@@ -1,86 +1,39 @@
-// player.ts
+// Player.ts
 
-export interface Player {
+export class Player {
     laneIndex: number;
     y: number;
     width: number;
     height: number;
-    color: string; // Fallback color if the image does not load
-    dy: number;
-    gravity: number;
-    jumpStrength: number;
-    isJumping: boolean;
-}
+    color: string;
 
-export class PlayerController {
-    private player: Player;
-    private lanes: number[];
-
-    constructor(lanes: number[]) {
-        this.lanes = lanes;
-        this.player = {
-            laneIndex: 1,  // Start in the middle lane
-            y: 0,
-            width: 50,
-            height: 50,
-            color: 'blue', // Fallback color
-            dy: 0,
-            gravity: 1.5,
-            jumpStrength: -20,
-            isJumping: false,
-        };
-        this.player.y = window.innerHeight - this.player.height; // Set initial y position
+    constructor(canvasHeight: number) {
+        this.laneIndex = 1; // Start in the middle lane
+        this.y = canvasHeight - 50; // Set player position
+        this.width = 20; // Width of the player
+        this.height = 20; // Height of the player
+        this.color = 'blue'; // Color of the player
     }
 
-    public draw(ctx: CanvasRenderingContext2D, playerSprite: HTMLImageElement | null, playerSpriteLoaded: boolean) {
-        const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;  // Calculate X based on the current lane
-        if (playerSpriteLoaded && playerSprite) {
-            ctx.drawImage(playerSprite, playerX, this.player.y, this.player.width, this.player.height);
-        } else {
-            // Draw the player rectangle as a backup
-            ctx.fillStyle = this.player.color;
-            ctx.fillRect(playerX, this.player.y, this.player.width, this.player.height);
+    moveLeft() {
+        if (this.laneIndex > 0) {
+            this.laneIndex--; // Move to the left lane
         }
     }
 
-    public handleMovement() {
-        this.player.y += this.player.dy;
-        this.player.dy += this.player.gravity;
-
-        if (this.player.y + this.player.height > window.innerHeight) {
-            this.player.y = window.innerHeight - this.player.height;
-            this.player.isJumping = false;
-            this.player.dy = 0;
+    moveRight() {
+        if (this.laneIndex < 2) {
+            this.laneIndex++; // Move to the right lane
         }
     }
 
-    public jump() {
-        if (!this.player.isJumping) {
-            this.player.dy = this.player.jumpStrength;
-            this.player.isJumping = true;
-        }
+    center() {
+        this.laneIndex = 1; // Center the player in the middle lane
     }
 
-    public moveLeft() {
-        if (this.player.laneIndex > 0) {
-            this.player.laneIndex--;  // Move to the left lane
-        }
-    }
-
-    public moveRight() {
-        if (this.player.laneIndex < 2) {
-            this.player.laneIndex++;  // Move to the right lane
-        }
-    }
-
-    public getPlayer() {
-        return this.player;
-    }
-
-    public reset() {
-        this.player.y = window.innerHeight - this.player.height;
-        this.player.dy = 0;
-        this.player.laneIndex = 1;  // Reset to the middle lane
-        this.player.isJumping = false; // Reset jumping status
+    // Reintroduced updatePosition method to set the y position based on the lane index
+    updatePosition(canvasHeight: number) {
+        // Set y position based on lane index
+        this.y = canvasHeight - 50; // Always set to the bottom of the canvas minus height
     }
 }

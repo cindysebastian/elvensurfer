@@ -8,6 +8,7 @@
         "postbuild": "copyfiles -u 1 src/index.html src/styles.css dist"
     },
     "devDependencies": {
+        "copyfiles": "^2.4.1",
         "typescript": "^4.9.5"
     }
 }
