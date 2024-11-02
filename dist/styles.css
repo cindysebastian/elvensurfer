@@ -70,13 +70,12 @@ body, html {
     align-items: center;
     height: 100vh;
     flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(30, 61, 47);
     color: white;
 }
 
-#text-container {
+#start-text{
     text-align: center;
-    margin-top: 20px;
 }
 
 #countdown {

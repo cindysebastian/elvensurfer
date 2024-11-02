@@ -9,18 +9,19 @@
 <body>
     <div id="initial-screen">
         <video id="webcam" autoplay></video>
-        <div id="text-container">
+        <div id="start-text">
             <h1>Press and Hold 'W' to Start the Game!</h1>
             <p id="countdown">Hold down W to start!</p>
         </div>
     </div>
-    <div id="startPrompt" style="display: none;">
+    <div id="pausePrompt" style="display: none;">
         <p>Game Paused! Hold 'W' to Start Again!</p>
     </div>
     <canvas id="gameCanvas"></canvas>
     <div id="hud">
         <span id="score">Score: 0</span>
         <div id="camera">
+            
             <video id="webcam" autoplay playsinline></video>
             <canvas id="webcamCanvas"></canvas>
         </div>

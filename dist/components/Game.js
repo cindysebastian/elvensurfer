@@ -20,7 +20,7 @@ var Game = /** @class */ (function () {
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
         this.gameStarted = false; // Game has not started
-        this.startPromptElement = document.getElementById('startPrompt'); // Assuming you have an element in HTML
+        this.startPromptElement = document.getElementById('pausePrompt'); // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;
     }
@@ -101,7 +101,7 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.pauseGame = function () {
         this.isActive = false; // Set game as inactive
-        this.showStartPrompt(); // Show prompt to hold W key to start again
+        this.showPausePrompt(); // Show prompt to hold W key to start again
     };
     Game.prototype.resetGame = function () {
         this.player = new Player(this.gameCanvas.height);
@@ -110,10 +110,10 @@ var Game = /** @class */ (function () {
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
     };
-    Game.prototype.showStartPrompt = function () {
+    Game.prototype.showPausePrompt = function () {
         this.startPromptElement.style.display = 'block'; // Show the prompt
     };
-    Game.prototype.hideStartPrompt = function () {
+    Game.prototype.hidePausePrompt = function () {
         this.startPromptElement.style.display = 'none'; // Hide the prompt
     };
     Game.prototype.start = function () {

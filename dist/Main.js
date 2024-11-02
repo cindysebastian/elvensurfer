@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (initScreen) {
                         initScreen.style.display = 'none'; // Hide the countdown element
                     }
-                    game.hideStartPrompt(); // Hide the start prompt
                 }
             }
             else {

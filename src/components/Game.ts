@@ -38,7 +38,7 @@ export class Game {
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
         this.gameStarted = false; // Game has not started
-        this.startPromptElement = document.getElementById('startPrompt')!; // Assuming you have an element in HTML
+        this.startPromptElement = document.getElementById('pausePrompt')!; // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;    
     }
@@ -130,7 +130,7 @@ export class Game {
 
     pauseGame() {
         this.isActive = false; // Set game as inactive
-        this.showStartPrompt(); // Show prompt to hold W key to start again
+        this.showPausePrompt(); // Show prompt to hold W key to start again
     }
 
     resetGame() {
@@ -141,11 +141,11 @@ export class Game {
         this.gameController.resetGame(); // Call reset on GameController
     }
 
-    showStartPrompt() {
+    showPausePrompt() {
         this.startPromptElement.style.display = 'block'; // Show the prompt
     }
 
-    hideStartPrompt() {
+    hidePausePrompt() {
         this.startPromptElement.style.display = 'none'; // Hide the prompt
     }
    

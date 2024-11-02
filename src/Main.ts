@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (initScreen) {
                         initScreen.style.display = 'none'; // Hide the countdown element
                     }
-                    game.hideStartPrompt(); // Hide the start prompt
                 }
             } else {
                 console.log("Did not Hold Input long enough");
