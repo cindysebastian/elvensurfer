@@ -43,12 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function startResetCountdown() {
-        countdownElement.textContent = `Hold W for ${countdown} seconds to reset...`;
+        countdownElement.textContent = `Hold W for ${countdown} more seconds to reset...`;
         
         const countdownInterval = setInterval(() => {
             if (keyHeldDown && isResetting) {
                 if (countdown > 0) {
-                    countdownElement.textContent = `Hold W for ${countdown} seconds to reset...`;
+                    countdownElement.style.display = 'block';
+                    countdownElement.textContent = `Hold W for ${countdown} more seconds to reset...`;
                     countdown--;
                 } else {
                     clearInterval(countdownInterval);
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (initScreen) {
                         initScreen.style.display = 'flex'; // Show initial screen
                     }
+                    countdownElement.style.display = 'none';
                     isResetting = false; // Reset the mode
                     resetCountdown(); // Reset countdown for the next action
                 }
@@ -67,12 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startGameCountdown() {
-        countdownElement.textContent = `Game starting in ${countdown} seconds...`;
+        countdownElement.textContent = `Starting in ${countdown} seconds...`;
 
         const countdownInterval = setInterval(() => {
             if (keyHeldDown && !isResetting) {
                 if (countdown > 0) {
-                    countdownElement.textContent = `Game starting in ${countdown} seconds...`;
+                    countdownElement.style.display = 'block';
+                    countdownElement.textContent = `Starting in ${countdown} seconds...`;
                     countdown--;
                 } else {
                     clearInterval(countdownInterval);
@@ -80,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (initScreen) {
                         initScreen.style.display = 'none'; // Hide the initial screen
                     }
+                    countdownElement.style.display = 'none';
                 }
             } else {
                 clearInterval(countdownInterval);

@@ -160,5 +160,6 @@ export class Game {
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
         this.HUD.style.display = 'block';
+        this.hidePausePrompt();
     }
 }

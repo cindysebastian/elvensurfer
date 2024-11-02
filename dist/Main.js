@@ -35,11 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     function startResetCountdown() {
-        countdownElement.textContent = "Hold W for ".concat(countdown, " seconds to reset...");
+        countdownElement.textContent = "Hold W for ".concat(countdown, " more seconds to reset...");
         var countdownInterval = setInterval(function () {
             if (keyHeldDown && isResetting) {
                 if (countdown > 0) {
-                    countdownElement.textContent = "Hold W for ".concat(countdown, " seconds to reset...");
+                    countdownElement.style.display = 'block';
+                    countdownElement.textContent = "Hold W for ".concat(countdown, " more seconds to reset...");
                     countdown--;
                 }
                 else {
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (initScreen) {
                         initScreen.style.display = 'flex'; // Show initial screen
                     }
+                    countdownElement.style.display = 'none';
                     isResetting = false; // Reset the mode
                     resetCountdown(); // Reset countdown for the next action
                 }
@@ -59,11 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 1000);
     }
     function startGameCountdown() {
-        countdownElement.textContent = "Game starting in ".concat(countdown, " seconds...");
+        countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
         var countdownInterval = setInterval(function () {
             if (keyHeldDown && !isResetting) {
                 if (countdown > 0) {
-                    countdownElement.textContent = "Game starting in ".concat(countdown, " seconds...");
+                    countdownElement.style.display = 'block';
+                    countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
                     countdown--;
                 }
                 else {
@@ -72,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (initScreen) {
                         initScreen.style.display = 'none'; // Hide the initial screen
                     }
+                    countdownElement.style.display = 'none';
                 }
             }
             else {
