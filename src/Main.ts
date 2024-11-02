@@ -15,33 +15,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const video = document.getElementById('webcam') as HTMLVideoElement;
     const webcamController = new WebcamController(video, webcamCanvas); // Pass video and canvas to WebcamController
 
-    let countdown: number = 3; // Countdown variable
-    let countdownInterval: NodeJS.Timeout | null = null; // Timer for the countdown
-
     const countdownElement = document.getElementById('countdown')!; // Get the countdown element
+    let countdownStarted = false;
+    let countdown = 3;
+    let keyHeldDown = false;
 
-    // Event listener for keydown to start the countdown
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'w') {
-            if (!countdownInterval) {
-                countdownInterval = setInterval(() => {
-                    if (countdown > 0) {
-                        countdownElement.textContent = `Countdown: ${countdown}`;
-                        countdown--;
-                    } else {
-                        clearInterval(countdownInterval!);
-                        startGame(); // Start the game when countdown ends
-                    }
-                }, 1000);
-            }
+        if (event.key === 'w' && !keyHeldDown) {
+            keyHeldDown = true; // Set the flag indicating the key is held down
+            startCountdown(); // Start the countdown
         }
     });
 
-    // Function to start the game
-    function startGame() {
-        // Hide the initial screen
-        document.getElementById('initial-screen')!.style.display = 'none';
-        // Start the game
-        game.start(); // Add this method to your Game class if not already present
+    document.addEventListener('keyup', (event) => {
+        if (event.key === 'w') {
+            keyHeldDown = false; // Reset the key held down flag
+            game.pauseGame(); // Pause the game when W is released
+            game.resetCountdown(); // Reset countdown state in Game class
+        }
+    });
+
+    function startCountdown() {
+        console.log("Starting Countdown");
+        // Reset the countdown display
+        countdownElement.textContent = `Game starting in ${game.countdown}...`;
+    
+        game.countdownInterval = setInterval(() => {
+            if (keyHeldDown) {
+                if (countdown > 0) {
+                    console.log(`Countdown: ${countdown}`); // Display the countdown in the console
+                    countdownElement.textContent = `Game starting in ${countdown}...`; // Update the displayed countdown
+                    countdown--;
+                } else {
+                    clearInterval(game.countdownInterval!);
+                    game.start(); // Start the game
+                    countdownElement.style.display = 'none'; // Hide the countdown element
+                    game.hideStartPrompt(); // Hide the start prompt
+                }
+            } else {
+                console.log("Did not Hold Input long enough");
+                clearInterval(game.countdownInterval!); // Stop the countdown
+                countdown = 3; // Reset countdown or handle as needed
+                countdownElement.textContent = `Hold down W to start!`;
+            }
+        }, 1000); // Change to 1000 ms for a countdown every second
     }
+    
+
 });

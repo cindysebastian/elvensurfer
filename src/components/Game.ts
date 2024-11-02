@@ -17,6 +17,8 @@ export class Game {
     countdown: number; // Countdown variable
     countdownInterval: NodeJS.Timeout | null; // Timer for the countdown
     gameStarted: boolean; // To track if the game has started
+    startPromptElement: HTMLElement;
+    isActive: boolean;
 
     constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController) {
         this.gameCanvas = gameCanvas;
@@ -43,9 +45,19 @@ export class Game {
         this.countdown = 3; // Initialize countdown
         this.countdownInterval = null; // No countdown interval set
         this.gameStarted = false; // Game has not started
+        this.startPromptElement = document.getElementById('startPrompt')!; // Assuming you have an element in HTML
+        this.startPromptElement.style.display = 'none'; // Initially hide the prompt
+        this.isActive = false;    
     }
 
+    resetCountdown() {
+        this.countdown = 3; // Reset countdown value
+    }
+
+
     createObstacle() {
+        if (!this.isActive) return; // Do not create obstacles if the game is not active
+
         const testWidth = this.gameCanvas.width * 0.1;
         const testHeight = this.gameCanvas.height * 0.1;
 
@@ -54,10 +66,10 @@ export class Game {
 
         if (testHeight < testWidth) {
             width = testWidth;
-            height = width;
+            height = width; // Setting height equal to width in this case
         } else {
             height = testHeight;
-            width = height;
+            width = height; // Setting width equal to height in this case
         }
 
         const laneIndex = Math.floor(Math.random() * 3);
@@ -106,14 +118,22 @@ export class Game {
                 this.player.y + this.player.height > obstacle.y) {
                 this.isGameOver = true; // Set game state to over
                 alert("Game Over! Final Score: " + this.score);
-                this.resetGame();
+                this.showStartPrompt(); // Show the start prompt when game is over
+                this.resetGame(); // Reset the game
             }
         });
     }
-
     drawScore() {
         const scoreElement = document.getElementById('score')!;
         scoreElement.textContent = 'Score: ' + this.score;
+    }
+    startGame() {
+        
+    }
+
+    pauseGame() {
+        this.isActive = false; // Set game as inactive
+        this.showStartPrompt(); // Show prompt to hold W key to start again
     }
 
     resetGame() {
@@ -123,6 +143,15 @@ export class Game {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
+        this.pauseGame(); // Ensure the game is paused
+    }
+
+    showStartPrompt() {
+        this.startPromptElement.style.display = 'block'; // Show the prompt
+    }
+
+    hideStartPrompt() {
+        this.startPromptElement.style.display = 'none'; // Hide the prompt
     }
 
     startCountdown() {
@@ -132,20 +161,24 @@ export class Game {
                     console.log(`Countdown: ${this.countdown}`); // Display the countdown in the console
                     this.countdown--;
                 } else {
-                    clearInterval(this.countdownInterval!);
+                    
+                    console.log("Game Start");
                     this.gameStarted = true; // Mark game as started
-                    this.start(); // Start the game (you may need to implement this method)
+                    this.start();
+                    clearInterval(this.countdownInterval!); // Start the game (you may need to implement this method)
                 }
             }, 1000);
         }
     }
+    
 
     start() {
-        // Implement any logic you need to initiate the game loop here
         this.isGameOver = false; // Ensure the game is not over
         this.frameCount = 0; // Reset frame count
         this.score = 0; // Reset score
         this.obstacles = []; // Clear existing obstacles
-        // Any other initial setup for starting the game can be done here
+        this.isActive = true; // Set game as active
+        this.hideStartPrompt();
+        
     }
 }

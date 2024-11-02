@@ -23,15 +23,13 @@ var GameController = /** @class */ (function () {
         var _this = this;
         var loop = function () {
             _this.game.gameCtx.clearRect(0, 0, _this.game.gameCanvas.width, _this.game.gameCanvas.height);
-            if (!_this.game.isGameOver) {
-                _this.game.drawPlayer(_this.playerSprite, _this.playerSpriteLoaded);
+            if (_this.game.isActive) {
                 if (_this.game.frameCount % _this.obstacleFrequency === 0) {
                     _this.game.createObstacle();
                 }
                 _this.game.drawObstacles(_this.obstacleSprite, _this.obstacleSpriteLoaded);
-                _this.game.detectCollision();
-                _this.game.drawScore();
-                _this.game.frameCount++;
+                _this.game.drawPlayer(_this.playerSprite, _this.obstacleSpriteLoaded);
+                _this.game.drawScore(); // Call the draw method that includes player and obstacle drawing
             }
             requestAnimationFrame(loop);
         };

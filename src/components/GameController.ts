@@ -34,27 +34,21 @@ export class GameController {
     startGameLoop() {
         const loop = () => {
             this.game.gameCtx.clearRect(0, 0, this.game.gameCanvas.width, this.game.gameCanvas.height);
-
-            if (!this.game.isGameOver) {
-                
-                this.game.drawPlayer(this.playerSprite, this.playerSpriteLoaded);
-
+    
+            if (this.game.isActive) {
                 if (this.game.frameCount % this.obstacleFrequency === 0) {
                     this.game.createObstacle();
                 }
-
+    
                 this.game.drawObstacles(this.obstacleSprite, this.obstacleSpriteLoaded);
-                this.game.detectCollision();
-                this.game.drawScore();
-
-                this.game.frameCount++;
+                this.game.drawPlayer(this.playerSprite, this.obstacleSpriteLoaded);
+                this.game.drawScore(); // Call the draw method that includes player and obstacle drawing
             }
-
+    
             requestAnimationFrame(loop);
         };
         loop();
     }
-
     resetGame() {
         this.playerController = new PlayerController(this.game.player); // Re-initialize player controller with new player instance
     }

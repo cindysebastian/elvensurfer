@@ -24,19 +24,27 @@ var Game = /** @class */ (function () {
         this.countdown = 3; // Initialize countdown
         this.countdownInterval = null; // No countdown interval set
         this.gameStarted = false; // Game has not started
+        this.startPromptElement = document.getElementById('startPrompt'); // Assuming you have an element in HTML
+        this.startPromptElement.style.display = 'none'; // Initially hide the prompt
+        this.isActive = false;
     }
+    Game.prototype.resetCountdown = function () {
+        this.countdown = 3; // Reset countdown value
+    };
     Game.prototype.createObstacle = function () {
+        if (!this.isActive)
+            return; // Do not create obstacles if the game is not active
         var testWidth = this.gameCanvas.width * 0.1;
         var testHeight = this.gameCanvas.height * 0.1;
         var width;
         var height;
         if (testHeight < testWidth) {
             width = testWidth;
-            height = width;
+            height = width; // Setting height equal to width in this case
         }
         else {
             height = testHeight;
-            width = height;
+            width = height; // Setting width equal to height in this case
         }
         var laneIndex = Math.floor(Math.random() * 3);
         var x = this.lanes[laneIndex] - width / 2;
@@ -83,13 +91,20 @@ var Game = /** @class */ (function () {
                 _this.player.y + _this.player.height > obstacle.y) {
                 _this.isGameOver = true; // Set game state to over
                 alert("Game Over! Final Score: " + _this.score);
-                _this.resetGame();
+                _this.showStartPrompt(); // Show the start prompt when game is over
+                _this.resetGame(); // Reset the game
             }
         });
     };
     Game.prototype.drawScore = function () {
         var scoreElement = document.getElementById('score');
         scoreElement.textContent = 'Score: ' + this.score;
+    };
+    Game.prototype.startGame = function () {
+    };
+    Game.prototype.pauseGame = function () {
+        this.isActive = false; // Set game as inactive
+        this.showStartPrompt(); // Show prompt to hold W key to start again
     };
     Game.prototype.resetGame = function () {
         this.isGameOver = false; // Reset game state
@@ -98,6 +113,13 @@ var Game = /** @class */ (function () {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
+        this.pauseGame(); // Ensure the game is paused
+    };
+    Game.prototype.showStartPrompt = function () {
+        this.startPromptElement.style.display = 'block'; // Show the prompt
+    };
+    Game.prototype.hideStartPrompt = function () {
+        this.startPromptElement.style.display = 'none'; // Hide the prompt
     };
     Game.prototype.startCountdown = function () {
         var _this = this;
@@ -108,20 +130,21 @@ var Game = /** @class */ (function () {
                     _this.countdown--;
                 }
                 else {
-                    clearInterval(_this.countdownInterval);
+                    console.log("Game Start");
                     _this.gameStarted = true; // Mark game as started
-                    _this.start(); // Start the game (you may need to implement this method)
+                    _this.start();
+                    clearInterval(_this.countdownInterval); // Start the game (you may need to implement this method)
                 }
             }, 1000);
         }
     };
     Game.prototype.start = function () {
-        // Implement any logic you need to initiate the game loop here
         this.isGameOver = false; // Ensure the game is not over
         this.frameCount = 0; // Reset frame count
         this.score = 0; // Reset score
         this.obstacles = []; // Clear existing obstacles
-        // Any other initial setup for starting the game can be done here
+        this.isActive = true; // Set game as active
+        this.hideStartPrompt();
     };
     return Game;
 }());
