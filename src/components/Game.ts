@@ -107,11 +107,20 @@ export class Game {
                 this.player.y < obstacle.y + obstacle.height &&
                 this.player.y + this.player.height > obstacle.y) {
                 this.isGameOver = true; // Set game state to over
-                alert("Game Over! Final Score: " + this.score);
-                this.resetGame(); // Reset the game
+                
+                // Display the game over overlay
+                const overlay = document.getElementById('game-over-overlay');
+                const finalScore = document.getElementById('final-score');
+                if (overlay && finalScore) {
+                    finalScore.textContent = "Final Score: " + this.score; // Update the score display
+                    overlay.style.display = 'block'; // Make the overlay visible
+                }
+    
+                this.resetGame(); // Reset the game (you might want to handle this differently)
             }
         });
     }
+    
 
     drawScore() {
         const scoreElement = document.getElementById('score')!;

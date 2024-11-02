@@ -30,6 +30,21 @@ body, html {
     height: 20%; /* Fixed height for HUD */
 }
 
+#game-over-overlay {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    top: 0; /* Stay on top */
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.8); /* Black background with some transparency */
+    color: white; /* White text color */
+    text-align: center; /* Center text */
+    padding-top: 20%; /* Add some space from the top */
+    z-index: 1000; /* Ensure it sits on top of other content */
+}
+
+
 #camera {
     height: 90%;
 }

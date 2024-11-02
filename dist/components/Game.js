@@ -83,8 +83,14 @@ var Game = /** @class */ (function () {
                 _this.player.y < obstacle.y + obstacle.height &&
                 _this.player.y + _this.player.height > obstacle.y) {
                 _this.isGameOver = true; // Set game state to over
-                alert("Game Over! Final Score: " + _this.score);
-                _this.resetGame(); // Reset the game
+                // Display the game over overlay
+                var overlay = document.getElementById('game-over-overlay');
+                var finalScore = document.getElementById('final-score');
+                if (overlay && finalScore) {
+                    finalScore.textContent = "Final Score: " + _this.score; // Update the score display
+                    overlay.style.display = 'block'; // Make the overlay visible
+                }
+                _this.resetGame(); // Reset the game (you might want to handle this differently)
             }
         });
     };
