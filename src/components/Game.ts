@@ -108,7 +108,6 @@ export class Game {
                 this.player.y + this.player.height > obstacle.y) {
                 this.isGameOver = true; // Set game state to over
                 alert("Game Over! Final Score: " + this.score);
-                this.showStartPrompt(); // Show the start prompt when game is over
                 this.resetGame(); // Reset the game
             }
         });
@@ -131,7 +130,6 @@ export class Game {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
-        this.pauseGame(); // Ensure the game is paused
     }
 
     showStartPrompt() {
@@ -144,10 +142,7 @@ export class Game {
    
 
     start() {
-        this.isGameOver = false; // Ensure the game is not over
         this.frameCount = 0; // Reset frame count
-        this.score = 0; // Reset score
-        this.obstacles = []; // Clear existing obstacles
         this.isActive = true; // Set game as active
     }
 }
