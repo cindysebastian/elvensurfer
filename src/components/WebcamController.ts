@@ -16,39 +16,42 @@ export class WebcamController {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             this.video.srcObject = stream;
-
+    
             this.video.onloadedmetadata = () => {
                 this.canvas.width = this.video.videoWidth;
                 this.canvas.height = this.video.videoHeight;
-
-                // Start capturing movement at a specified interval
-                setInterval(() => this.captureMovement(), 1000);
+                this.captureMovement(); // Start the capture loop
             };
         } catch (error) {
             console.error('Webcam setup error:', error);
         }
     }
 
+    /*Using the usual Delay instead of Request Animation Frame like here is proooobably going to cause performance issues/Resource fighting with the movement/key chacking*/
+    
     private captureMovement() {
         const width = this.canvas.width;
         const height = this.canvas.height;
-
+    
         if (width <= 0 || height <= 0) {
             console.error('Invalid canvas dimensions');
             return;
         }
-
+    
         try {
             this.ctx.drawImage(this.video, 0, 0, width, height);
             const imageData = this.ctx.getImageData(0, 0, width, height);
-
-            // Process imageData for movement detection
-            // Implement movement logic based on image processing here
-
+    
+            // Process imageData for movement detection here
+    
         } catch (error) {
             console.error('Error during captureMovement:', error);
         }
+    
+        // Schedule the next frame
+        requestAnimationFrame(() => this.captureMovement());
     }
+    
 
     public updateSnapshot() {
         const width = this.canvas.width;

@@ -57,8 +57,7 @@ var WebcamController = /** @class */ (function () {
                         this.video.onloadedmetadata = function () {
                             _this.canvas.width = _this.video.videoWidth;
                             _this.canvas.height = _this.video.videoHeight;
-                            // Start capturing movement at a specified interval
-                            setInterval(function () { return _this.captureMovement(); }, 1000);
+                            _this.captureMovement(); // Start the capture loop
                         };
                         return [3 /*break*/, 3];
                     case 2:
@@ -70,7 +69,9 @@ var WebcamController = /** @class */ (function () {
             });
         });
     };
+    /*Using the usual Delay instead of Request Animation Frame like here is proooobably going to cause performance issues/Resource fighting with the movement/key chacking*/
     WebcamController.prototype.captureMovement = function () {
+        var _this = this;
         var width = this.canvas.width;
         var height = this.canvas.height;
         if (width <= 0 || height <= 0) {
@@ -80,12 +81,13 @@ var WebcamController = /** @class */ (function () {
         try {
             this.ctx.drawImage(this.video, 0, 0, width, height);
             var imageData = this.ctx.getImageData(0, 0, width, height);
-            // Process imageData for movement detection
-            // Implement movement logic based on image processing here
+            // Process imageData for movement detection here
         }
         catch (error) {
             console.error('Error during captureMovement:', error);
         }
+        // Schedule the next frame
+        requestAnimationFrame(function () { return _this.captureMovement(); });
     };
     WebcamController.prototype.updateSnapshot = function () {
         var width = this.canvas.width;

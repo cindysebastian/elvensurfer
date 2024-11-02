@@ -4,12 +4,15 @@ import { WebcamController } from './components/WebcamController.js';
 document.addEventListener('DOMContentLoaded', function () {
     var gameCanvas = document.getElementById('gameCanvas');
     var webcamCanvas = document.getElementById('webcamCanvas');
+    var initCamCanvas = document.getElementById('initCamCanvas');
     var gameController = new GameController();
     var game = new Game(gameCanvas, webcamCanvas, gameController);
     gameController.setGame(game);
     // Setup webcam
     var video = document.getElementById('webcam');
     var webcamController = new WebcamController(video, webcamCanvas);
+    var initVideo = document.getElementById('initWebcam');
+    var initCamController = new WebcamController(initVideo, initCamCanvas);
     var initScreen = document.getElementById('initial-screen');
     var countdownElement = document.getElementById('countdown');
     var countdown = 3;
