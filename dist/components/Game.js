@@ -91,6 +91,7 @@ var Game = /** @class */ (function () {
                     overlay.style.display = 'block'; // Make the overlay visible
                 }
                 _this.resetGame(); // Reset the game (you might want to handle this differently)
+                _this.isActive = false;
             }
         });
     };
@@ -103,7 +104,6 @@ var Game = /** @class */ (function () {
         this.showStartPrompt(); // Show prompt to hold W key to start again
     };
     Game.prototype.resetGame = function () {
-        this.isGameOver = false; // Reset game state
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
@@ -117,6 +117,7 @@ var Game = /** @class */ (function () {
         this.startPromptElement.style.display = 'none'; // Hide the prompt
     };
     Game.prototype.start = function () {
+        this.isGameOver = false;
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
     };

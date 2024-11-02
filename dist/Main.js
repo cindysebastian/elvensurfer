@@ -18,7 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keydown', function (event) {
         if (event.key === 'w' && !keyHeldDown) {
             keyHeldDown = true; // Set the flag indicating the key is held down
-            startCountdown(); // Start the countdown
+            if (game.isGameOver) {
+                // If the game is over, reset and show the initial screen again
+                game.resetGame();
+                if (initScreen) {
+                    initScreen.style.display = 'block'; // Show the initial screen again
+                }
+                countdownElement.textContent = "Hold down W to start!"; // Prompt the user
+            }
+            else {
+                startCountdown(); // Start the countdown if the game is active
+            }
         }
     });
     document.addEventListener('keyup', function (event) {
@@ -29,19 +39,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     function startCountdown() {
         console.log("Starting Countdown");
-        // Reset the countdown display
         countdownElement.textContent = "Game starting in ".concat(countdown, "...");
         var countdownInterval = setInterval(function () {
             if (keyHeldDown) {
                 if (countdown > 0) {
-                    console.log("Countdown: ".concat(countdown)); // Display the countdown in the console
-                    countdownElement.textContent = "Game starting in ".concat(countdown, "..."); // Update the displayed countdown
+                    console.log("Countdown: ".concat(countdown));
+                    countdownElement.textContent = "Game starting in ".concat(countdown, "...");
                     countdown--;
                 }
                 else {
                     clearInterval(countdownInterval);
                     game.start(); // Start the game
-                    if (initScreen) { // Check if initScreen is not null
+                    if (initScreen) {
                         initScreen.style.display = 'none'; // Hide the countdown element
                     }
                     game.hideStartPrompt(); // Hide the start prompt
@@ -49,10 +58,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             else {
                 console.log("Did not Hold Input long enough");
-                clearInterval(countdownInterval); // Stop the countdown
+                clearInterval(countdownInterval);
                 countdown = 3; // Reset countdown or handle as needed
                 countdownElement.textContent = "Hold down W to start!";
             }
-        }, 1000); // Change to 1000 ms for a countdown every second
+        }, 1000);
     }
 });

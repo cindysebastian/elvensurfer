@@ -117,6 +117,7 @@ export class Game {
                 }
     
                 this.resetGame(); // Reset the game (you might want to handle this differently)
+                this.isActive = false;
             }
         });
     }
@@ -133,7 +134,6 @@ export class Game {
     }
 
     resetGame() {
-        this.isGameOver = false; // Reset game state
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
@@ -151,6 +151,7 @@ export class Game {
    
 
     start() {
+        this.isGameOver = false;
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
     }
