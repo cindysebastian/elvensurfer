@@ -4,16 +4,16 @@ import { GameController } from './components/GameController.js';
 import { WebcamController } from './components/WebcamController.js'; // Import the new WebcamController
 
 document.addEventListener('DOMContentLoaded', () => {
-    const gameCanvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
-    const webcamCanvas = document.getElementById('webcamCanvas') as HTMLCanvasElement;
-    
-    if (!gameCanvas || !webcamCanvas) {
-        console.error("Canvas elements not found.");
-        return; // Exit if canvas elements are not found
-    }
+    // Main.ts or wherever you initialize your game
 
-    const game = new Game(gameCanvas, webcamCanvas);
-    const gameController = new GameController(game);
+const gameCanvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+const webcamCanvas = document.getElementById('webcamCanvas') as HTMLCanvasElement;
+
+const gameController = new GameController(); // Create a GameController instance
+const game = new Game(gameCanvas, webcamCanvas, gameController); // Pass it to the Game constructor
+
+gameController.setGame(game); // Make sure GameController has reference to the Game
+
 
     // Setup webcam
     const video = document.getElementById('webcam') as HTMLVideoElement;

@@ -1,5 +1,3 @@
-// PlayerController.ts
-
 import { Player } from './Player.js';
 
 export class PlayerController {
@@ -9,24 +7,30 @@ export class PlayerController {
 
     constructor(player: Player) {
         this.player = player;
-        this.isMovingLeft = false; // Track if left key is pressed
-        this.isMovingRight = false; // Track if right key is pressed
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
 
+        // Event listeners
         window.addEventListener('keydown', (e) => this.handleKeyDown(e));
         window.addEventListener('keyup', (e) => this.handleKeyUp(e));
     }
 
     handleKeyDown(event: KeyboardEvent) {
+        if (!this.player) {
+            console.log("no player");
+            return;
+        }; // Ignore if player is not defined
+        console.log("Key pressed:", event.code); // Debug line
         switch (event.code) {
             case 'ArrowLeft':
             case 'KeyA':
-                this.isMovingLeft = true; // Mark left key as pressed
-                this.player.moveLeft(); // Move left
+                this.isMovingLeft = true;
+                this.player.moveLeft();
                 break;
             case 'ArrowRight':
             case 'KeyD':
-                this.isMovingRight = true; // Mark right key as pressed
-                this.player.moveRight(); // Move right
+                this.isMovingRight = true;
+                this.player.moveRight();
                 break;
         }
     }
@@ -35,17 +39,16 @@ export class PlayerController {
         switch (event.code) {
             case 'ArrowLeft':
             case 'KeyA':
-                this.isMovingLeft = false; // Mark left key as released
+                this.isMovingLeft = false;
                 break;
             case 'ArrowRight':
             case 'KeyD':
-                this.isMovingRight = false; // Mark right key as released
+                this.isMovingRight = false;
                 break;
         }
 
-        // Center the player back to the middle lane when no keys are held
         if (!this.isMovingLeft && !this.isMovingRight) {
-            this.player.center(); // Center the player
+            this.player.center();
         }
     }
 }

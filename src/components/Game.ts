@@ -1,6 +1,6 @@
 // Game.ts
-
 import { Player } from './Player.js';
+import { GameController } from './GameController.js';
 
 export class Game {
     gameCanvas: HTMLCanvasElement;
@@ -13,8 +13,10 @@ export class Game {
     score: number;
     laneWidth: number;
     lanes: number[];
+    isGameOver: boolean; // Add game state property
+    gameController: GameController; // Add a reference to GameController
 
-    constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement) {
+    constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController) {
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d')!;
         this.webcamCanvas = webcamCanvas;
@@ -29,6 +31,8 @@ export class Game {
             this.laneWidth * 1.5,
             this.laneWidth * 2.5
         ];
+        this.isGameOver = false; // Initialize game state
+        this.gameController = gameController; // Set the GameController instance
     }
 
     createObstacle() {
@@ -41,14 +45,14 @@ export class Game {
     }
 
     drawPlayer(playerSprite: HTMLImageElement, playerSpriteLoaded: boolean) {
-        const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
+        const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2; // Calculate player X position based on lane
         if (playerSpriteLoaded) {
             this.gameCtx.drawImage(playerSprite, playerX, this.player.y, this.player.width, this.player.height);
         } else {
             this.gameCtx.fillStyle = this.player.color;
             this.gameCtx.fillRect(playerX, this.player.y, this.player.width, this.player.height);
         }
-    }
+    }    
 
     drawObstacles(obstacleSprite: HTMLImageElement, obstacleSpriteLoaded: boolean) {
         this.obstacles.forEach(obstacle => {
@@ -68,12 +72,14 @@ export class Game {
     }
 
     detectCollision() {
+        if (this.isGameOver) return; // Prevent collision detection if game is over
         const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
         this.obstacles.forEach(obstacle => {
             if (playerX < obstacle.x + obstacle.width &&
                 playerX + this.player.width > obstacle.x &&
                 this.player.y < obstacle.y + obstacle.height &&
                 this.player.y + this.player.height > obstacle.y) {
+                this.isGameOver = true; // Set game state to over
                 alert("Game Over! Final Score: " + this.score);
                 this.resetGame();
             }
@@ -86,9 +92,11 @@ export class Game {
     }
 
     resetGame() {
+        this.isGameOver = false; // Reset game state
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
         this.score = 0;
-    }
+        this.gameController.resetGame(); // Call reset on GameController
+    }    
 }

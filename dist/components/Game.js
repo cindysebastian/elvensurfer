@@ -1,7 +1,7 @@
 // Game.ts
 import { Player } from './Player.js';
 var Game = /** @class */ (function () {
-    function Game(gameCanvas, webcamCanvas) {
+    function Game(gameCanvas, webcamCanvas, gameController) {
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d');
         this.webcamCanvas = webcamCanvas;
@@ -16,6 +16,8 @@ var Game = /** @class */ (function () {
             this.laneWidth * 1.5,
             this.laneWidth * 2.5
         ];
+        this.isGameOver = false; // Initialize game state
+        this.gameController = gameController; // Set the GameController instance
     }
     Game.prototype.createObstacle = function () {
         var width = 15;
@@ -26,7 +28,7 @@ var Game = /** @class */ (function () {
         this.obstacles.push({ x: x, y: y, width: width, height: height, laneIndex: laneIndex });
     };
     Game.prototype.drawPlayer = function (playerSprite, playerSpriteLoaded) {
-        var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
+        var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2; // Calculate player X position based on lane
         if (playerSpriteLoaded) {
             this.gameCtx.drawImage(playerSprite, playerX, this.player.y, this.player.width, this.player.height);
         }
@@ -54,12 +56,15 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.detectCollision = function () {
         var _this = this;
+        if (this.isGameOver)
+            return; // Prevent collision detection if game is over
         var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
         this.obstacles.forEach(function (obstacle) {
             if (playerX < obstacle.x + obstacle.width &&
                 playerX + _this.player.width > obstacle.x &&
                 _this.player.y < obstacle.y + obstacle.height &&
                 _this.player.y + _this.player.height > obstacle.y) {
+                _this.isGameOver = true; // Set game state to over
                 alert("Game Over! Final Score: " + _this.score);
                 _this.resetGame();
             }
@@ -70,10 +75,12 @@ var Game = /** @class */ (function () {
         scoreElement.textContent = 'Score: ' + this.score;
     };
     Game.prototype.resetGame = function () {
+        this.isGameOver = false; // Reset game state
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
         this.frameCount = 0;
         this.score = 0;
+        this.gameController.resetGame(); // Call reset on GameController
     };
     return Game;
 }());

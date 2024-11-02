@@ -4,17 +4,21 @@ import { Game } from './Game.js';
 import { PlayerController } from './PlayerController.js';
 
 export class GameController {
-    game: Game;
-    playerController: PlayerController;
-    playerSprite: HTMLImageElement;
-    obstacleSprite: HTMLImageElement;
+    game!: Game;
+    playerController!: PlayerController;
+    playerSprite!: HTMLImageElement;
+    obstacleSprite!: HTMLImageElement;
     playerSpriteLoaded: boolean = false;
     obstacleSpriteLoaded: boolean = false;
     obstacleFrequency: number = 120;
 
-    constructor(game: Game) {
-        this.game = game;
-        this.playerController = new PlayerController(game.player);
+    constructor() {
+        // No need to initialize game here yet
+    }
+
+    setGame(game: Game) {
+        this.game = game; // Assign the game reference
+        this.playerController = new PlayerController(game.player); // Initialize with the current player
 
         this.playerSprite = new Image();
         this.playerSprite.src = '../assets/legolas.png';
@@ -29,29 +33,29 @@ export class GameController {
 
     startGameLoop() {
         const loop = () => {
-            // Clear the game canvas
             this.game.gameCtx.clearRect(0, 0, this.game.gameCanvas.width, this.game.gameCanvas.height);
 
-            // Update the player's position and draw the player
-            this.game.player.updatePosition(this.game.gameCanvas.height);
-            this.game.drawPlayer(this.playerSprite, this.playerSpriteLoaded);
+            if (!this.game.isGameOver) {
+                this.game.player.updatePosition(this.game.gameCanvas.height);
+                this.game.drawPlayer(this.playerSprite, this.playerSpriteLoaded);
 
-            // Create new obstacles at defined frequency
-            if (this.game.frameCount % this.obstacleFrequency === 0) {
-                this.game.createObstacle();
+                if (this.game.frameCount % this.obstacleFrequency === 0) {
+                    this.game.createObstacle();
+                }
+
+                this.game.drawObstacles(this.obstacleSprite, this.obstacleSpriteLoaded);
+                this.game.detectCollision();
+                this.game.drawScore();
+
+                this.game.frameCount++;
             }
 
-            // Draw obstacles and check for collisions
-            this.game.drawObstacles(this.obstacleSprite, this.obstacleSpriteLoaded);
-            this.game.detectCollision();
-
-            // Draw the score on the HUD
-            this.game.drawScore();
-
-            // Increment the frame count for obstacle creation
-            this.game.frameCount++;
             requestAnimationFrame(loop);
         };
         loop();
+    }
+
+    resetGame() {
+        this.playerController = new PlayerController(this.game.player); // Re-initialize player controller with new player instance
     }
 }

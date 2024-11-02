@@ -10,17 +10,18 @@ var Player = /** @class */ (function () {
     Player.prototype.moveLeft = function () {
         if (this.laneIndex > 0) {
             this.laneIndex--; // Move to the left lane
+            console.log("Moved left to lane:", this.laneIndex); // Debug line
         }
     };
     Player.prototype.moveRight = function () {
         if (this.laneIndex < 2) {
             this.laneIndex++; // Move to the right lane
+            console.log("Moved right to lane:", this.laneIndex); // Debug line
         }
     };
     Player.prototype.center = function () {
         this.laneIndex = 1; // Center the player in the middle lane
     };
-    // Reintroduced updatePosition method to set the y position based on the lane index
     Player.prototype.updatePosition = function (canvasHeight) {
         // Set y position based on lane index
         this.y = canvasHeight - 50; // Always set to the bottom of the canvas minus height
