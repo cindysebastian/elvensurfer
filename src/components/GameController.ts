@@ -43,6 +43,7 @@ export class GameController {
             if (this.game.isActive) {
                 // Increment frame count for each loop iteration
                 this.game.frameCount++; 
+                this.game.detectCollision();
     
                 // Check if enough time has passed for spawning an obstacle
                 if (this.game.frameCount * this.fixedDeltaTime >= this.obstacleFrequency) {

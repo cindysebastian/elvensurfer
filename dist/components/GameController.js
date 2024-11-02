@@ -30,6 +30,7 @@ var GameController = /** @class */ (function () {
             if (_this.game.isActive) {
                 // Increment frame count for each loop iteration
                 _this.game.frameCount++;
+                _this.game.detectCollision();
                 // Check if enough time has passed for spawning an obstacle
                 if (_this.game.frameCount * _this.fixedDeltaTime >= _this.obstacleFrequency) {
                     console.log("Spawning Obstacle");
