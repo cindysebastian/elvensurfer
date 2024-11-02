@@ -23,6 +23,7 @@ var Game = /** @class */ (function () {
         this.startPromptElement = document.getElementById('pausePrompt'); // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;
+        this.gameOverElement = document.getElementById('game-over-overlay');
     }
     Game.prototype.createObstacle = function () {
         if (!this.isActive)
@@ -84,13 +85,11 @@ var Game = /** @class */ (function () {
                 _this.player.y + _this.player.height > obstacle.y) {
                 _this.isGameOver = true; // Set game state to over
                 // Display the game over overlay
-                var overlay = document.getElementById('game-over-overlay');
                 var finalScore = document.getElementById('final-score');
-                if (overlay && finalScore) {
+                if (_this.gameOverElement && finalScore) {
                     finalScore.textContent = "Final Score: " + _this.score; // Update the score display
-                    overlay.style.display = 'block'; // Make the overlay visible
+                    _this.gameOverElement.style.display = 'block'; // Make the overlay visible
                 }
-                _this.resetGame(); // Reset the game (you might want to handle this differently)
                 _this.isActive = false;
             }
         });
@@ -109,6 +108,8 @@ var Game = /** @class */ (function () {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
+        this.gameOverElement.style.display = 'none';
+        this.isGameOver = false;
     };
     Game.prototype.showPausePrompt = function () {
         this.startPromptElement.style.display = 'block'; // Show the prompt
@@ -117,7 +118,6 @@ var Game = /** @class */ (function () {
         this.startPromptElement.style.display = 'none'; // Hide the prompt
     };
     Game.prototype.start = function () {
-        this.isGameOver = false;
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
     };

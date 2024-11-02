@@ -14,23 +14,26 @@
             <p id="countdown">Hold down W to start!</p>
         </div>
     </div>
+    
+    <canvas id="gameCanvas"></canvas>
     <div id="pausePrompt" style="display: none;">
         <p>Game Paused! Hold 'W' to Start Again!</p>
     </div>
-    <canvas id="gameCanvas"></canvas>
     <div id="hud">
-        <span id="score">Score: 0</span>
+        <span id="score"></span>
         <div id="camera">
-            
             <video id="webcam" autoplay playsinline></video>
             <canvas id="webcamCanvas"></canvas>
         </div>
     </div>
-    <script type="module" src="Main.js" defer></script>
+    
     <div id="game-over-overlay">
         <h1>Game Over!</h1>
         <p id="final-score"></p>
         <p>Reload to restart Game!</p>
     </div>
+    
+    
+    <script type="module" src="Main.js" defer></script>
 </body>
 </html>

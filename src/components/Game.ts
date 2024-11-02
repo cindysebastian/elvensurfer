@@ -17,6 +17,7 @@ export class Game {
     gameStarted: boolean; // To track if the game has started
     startPromptElement: HTMLElement;
     isActive: boolean;
+    gameOverElement: HTMLElement;
 
     constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController) {
         this.gameCanvas = gameCanvas;
@@ -41,6 +42,7 @@ export class Game {
         this.startPromptElement = document.getElementById('pausePrompt')!; // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;    
+        this.gameOverElement = document.getElementById('game-over-overlay')!;
     }
 
 
@@ -109,14 +111,12 @@ export class Game {
                 this.isGameOver = true; // Set game state to over
                 
                 // Display the game over overlay
-                const overlay = document.getElementById('game-over-overlay');
                 const finalScore = document.getElementById('final-score');
-                if (overlay && finalScore) {
+                if (this.gameOverElement && finalScore) {
                     finalScore.textContent = "Final Score: " + this.score; // Update the score display
-                    overlay.style.display = 'block'; // Make the overlay visible
+                    this.gameOverElement.style.display = 'block'; // Make the overlay visible
                 }
     
-                this.resetGame(); // Reset the game (you might want to handle this differently)
                 this.isActive = false;
             }
         });
@@ -139,6 +139,8 @@ export class Game {
         this.frameCount = 0;
         this.score = 0;
         this.gameController.resetGame(); // Call reset on GameController
+        this.gameOverElement.style.display = 'none';
+        this.isGameOver = false;
     }
 
     showPausePrompt() {
@@ -151,7 +153,7 @@ export class Game {
    
 
     start() {
-        this.isGameOver = false;
+        
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
     }
