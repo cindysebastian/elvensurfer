@@ -118,7 +118,6 @@ var Game = /** @class */ (function () {
         this.score = 0; // Reset score
         this.obstacles = []; // Clear existing obstacles
         this.isActive = true; // Set game as active
-        this.hideStartPrompt();
     };
     return Game;
 }());

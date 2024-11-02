@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Setup webcam
     var video = document.getElementById('webcam');
     var webcamController = new WebcamController(video, webcamCanvas); // Pass video and canvas to WebcamController
+    var initScreen = document.getElementById('initial-screen');
     var countdownElement = document.getElementById('countdown'); // Get the countdown element
     var countdownStarted = false;
     var countdown = 3;
@@ -40,7 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 else {
                     clearInterval(countdownInterval);
                     game.start(); // Start the game
-                    countdownElement.style.display = 'none'; // Hide the countdown element
+                    if (initScreen) { // Check if initScreen is not null
+                        initScreen.style.display = 'none'; // Hide the countdown element
+                    }
                     game.hideStartPrompt(); // Hide the start prompt
                 }
             }
