@@ -16,7 +16,7 @@ html {
     display: block;
     width: 100%;
     height: 75%;
-    /* Adjust height to leave space for HUD */
+    background-image: url("../assets/bg.jpg");
 }
 
 #logo {
@@ -30,68 +30,38 @@ html {
 #hud {
     display: none;
     justify-content: space-between;
-    /* Space out the score and webcam */
     align-items: center;
-    /* Center align items vertically */
-    padding: 10px;
-    /* Padding around the HUD */
+    padding: 2%;
     background-color: rgba(0, 0, 0, 0.8);
-    /* Semi-transparent background for visibility */
     color: white;
-    /* Text color */
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
-    /* Full width of the viewport */
-    height: 20%;
-    /* Fixed height for HUD */
+    width: 100vw;
+    height: 18%;
 }
 
 #game-over-overlay {
     display: none;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     top: 0;
-    /* Stay on top */
     left: 0;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
     background-color: rgb(30, 61, 47);
-    /* Black background with some transparency */
     color: white;
-    /* White text color */
     text-align: center;
-    /* Center text */
     padding-top: 20%;
-    /* Add some space from the top */
     z-index: 1000;
-    /* Ensure it sits on top of other content */
 }
 
-
-#camera {
-    height: 90%;
-}
-
-/* Styles for webcam and webcamCanvas */
-#webcam,
-#webcamCanvas {
-    width: auto;
-    /* Make them responsive */
-    height: 100%;
-    /* Match the height of the HUD */
-    padding-right: 50px;
-}
 
 /* Score styling */
 #score {
+    float: left;
     margin-left: 10px;
     /* Spacing from the left */
-    font-size: 40px;
+    font-size: 40pt;
     /* Font size for score display */
     font-family: "Brush Script MT", fantasy;
 }
@@ -137,13 +107,29 @@ html {
     display: none;
 }
 
-#initCamCanvas {
-    position: absolute;
-    height: 100vh;
-    margin: 5%;
-}
 
 #initWebcam {
     height: 70%;
+}
 
+
+#webcam {
+    height: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+#placeholder {
+    display: inline-grid;
+    grid-column-start: 3;
+    grid-column-end: 4;
+}
+
+#webcamCanvas {
+    display: none;
+}
+
+#initCamCanvas {
+    display: none;
 }

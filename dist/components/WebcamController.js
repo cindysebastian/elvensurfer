@@ -34,7 +34,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-// WebcamController.ts
 var WebcamController = /** @class */ (function () {
     function WebcamController(videoElement, canvasElement) {
         this.video = videoElement;
@@ -55,7 +54,7 @@ var WebcamController = /** @class */ (function () {
                         stream = _a.sent();
                         this.video.srcObject = stream;
                         this.video.onloadedmetadata = function () {
-                            _this.captureMovement(); // Start the capture loop
+                            _this.startProcessingLoop(); // Start the frame capture and processing loop
                         };
                         return [3 /*break*/, 3];
                     case 2:
@@ -67,33 +66,20 @@ var WebcamController = /** @class */ (function () {
             });
         });
     };
-    /*Using the usual Delay instead of Request Animation Frame like here is proooobably going to cause performance issues/Resource fighting with the movement/key chacking*/
-    WebcamController.prototype.captureMovement = function () {
+    WebcamController.prototype.startProcessingLoop = function () {
         var _this = this;
-        var width = this.canvas.width;
-        var height = this.canvas.height;
-        if (width <= 0 || height <= 0) {
-            console.error('Invalid canvas dimensions');
-            return;
-        }
-        try {
-            //this.ctx.drawImage(this.video, 0, 0, width, height);
-            var imageData = this.ctx.getImageData(0, 0, width, height);
-            // Process imageData for movement detection here
-        }
-        catch (error) {
-            console.error('Error during captureMovement:', error);
-        }
-        // Schedule the next frame
-        requestAnimationFrame(function () { return _this.captureMovement(); });
-    };
-    WebcamController.prototype.updateSnapshot = function () {
-        var width = this.canvas.width;
-        var height = this.canvas.height;
-        if (this.ctx) {
-            // Resize canvas to the webcam dimensions if needed
-            this.ctx.drawImage(this.video, 0, 0, width, height);
-        }
+        var width = this.canvas.width = this.video.videoWidth;
+        var height = this.canvas.height = this.video.videoHeight;
+        var processFrame = function () {
+            if (width > 0 && height > 0) {
+                // Draw frame to canvas (invisible to user, remove display none from CSS to see the frame)
+                _this.ctx.drawImage(_this.video, 0, 0, width, height);
+                var imageData = _this.ctx.getImageData(0, 0, width, height);
+                // Process imageData here for movement detection
+            }
+            requestAnimationFrame(processFrame); // Schedule the next frame
+        };
+        processFrame(); // Start the first frame
     };
     return WebcamController;
 }());

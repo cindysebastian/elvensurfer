@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Endless Runner Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div id="initial-screen">
-        <img id = "logo" src="../assets/Logo.PNG"/>
+        <img id="logo" src="../assets/Logo.PNG" />
         <canvas id="initCamCanvas"></canvas>
         <video id="initWebcam" autoplay></video>
         <div id="start-text">
@@ -22,19 +24,20 @@
     </div>
     <div id="hud">
         <span id="score"></span>
-        <div id="camera">
-            <video id="webcam" autoplay playsinline></video>
-            <canvas id="webcamCanvas"></canvas>
-        </div>
+        <canvas id="webcamCanvas"></canvas>
+        <video id="webcam" autoplay playsinline></video>
+        <span id="placeholder"></span>
+
     </div>
-    
+
     <div id="game-over-overlay">
         <h1>Game Over!</h1>
         <p id="final-score"></p>
         <p>Hold W to restart the Game!</p>
     </div>
-    
-    
+
+
     <script type="module" src="Main.js" defer></script>
 </body>
+
 </html>

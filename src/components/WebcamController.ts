@@ -1,4 +1,3 @@
-// WebcamController.ts
 export class WebcamController {
     private video: HTMLVideoElement;
     private canvas: HTMLCanvasElement;
@@ -16,48 +15,31 @@ export class WebcamController {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             this.video.srcObject = stream;
-    
+
             this.video.onloadedmetadata = () => {
-                this.captureMovement(); // Start the capture loop
+                this.startProcessingLoop(); // Start the frame capture and processing loop
             };
         } catch (error) {
             console.error('Webcam setup error:', error);
         }
     }
 
-    /*Using the usual Delay instead of Request Animation Frame like here is proooobably going to cause performance issues/Resource fighting with the movement/key chacking*/
-    
-    private captureMovement() {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
-    
-        if (width <= 0 || height <= 0) {
-            console.error('Invalid canvas dimensions');
-            return;
-        }
-    
-        try {
-            //this.ctx.drawImage(this.video, 0, 0, width, height);
-            const imageData = this.ctx.getImageData(0, 0, width, height);
-    
-            // Process imageData for movement detection here
-    
-        } catch (error) {
-            console.error('Error during captureMovement:', error);
-        }
-    
-        // Schedule the next frame
-        requestAnimationFrame(() => this.captureMovement());
-    }
-    
+    private startProcessingLoop() {
+        const width = this.canvas.width = this.video.videoWidth;
+        const height = this.canvas.height = this.video.videoHeight;
 
-    public updateSnapshot() {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
+        const processFrame = () => {
+            if (width > 0 && height > 0) {
+                // Draw frame to canvas (invisible to user, remove display none from CSS to see the frame)
+                this.ctx.drawImage(this.video, 0, 0, width, height);
+                const imageData = this.ctx.getImageData(0, 0, width, height);
 
-        if (this.ctx) {
-            // Resize canvas to the webcam dimensions if needed
-            this.ctx.drawImage(this.video, 0, 0, width, height);
-        }
+                // Process imageData here for movement detection
+
+            }
+            requestAnimationFrame(processFrame); // Schedule the next frame
+        };
+
+        processFrame(); // Start the first frame
     }
 }
