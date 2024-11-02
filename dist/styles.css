@@ -17,7 +17,7 @@ body, html {
 
 /* HUD styles */
 #hud {
-    display: flex;
+    display: none;
     justify-content: space-between; /* Space out the score and webcam */
     align-items: center; /* Center align items vertically */
     padding: 10px; /* Padding around the HUD */
@@ -62,6 +62,13 @@ body, html {
     font-size: 40px; /* Font size for score display */
     font-family:"Brush Script MT", fantasy;
 }
+#pausePrompt{
+    position: absolute;
+    color: white;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0, 0, 0, 0.7);
+}
 
 
 #initial-screen {
@@ -76,6 +83,7 @@ body, html {
 
 #start-text{
     position: absolute;
+    bottom: 10%;
     text-align: center;
 }
 

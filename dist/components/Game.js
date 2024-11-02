@@ -24,6 +24,7 @@ var Game = /** @class */ (function () {
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;
         this.gameOverElement = document.getElementById('game-over-overlay');
+        this.HUD = document.getElementById('hud');
     }
     Game.prototype.createObstacle = function () {
         if (!this.isActive)
@@ -110,6 +111,7 @@ var Game = /** @class */ (function () {
         this.gameController.resetGame(); // Call reset on GameController
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
+        this.HUD.style.display = 'none';
     };
     Game.prototype.showPausePrompt = function () {
         this.startPromptElement.style.display = 'block'; // Show the prompt
@@ -120,6 +122,7 @@ var Game = /** @class */ (function () {
     Game.prototype.start = function () {
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
+        this.HUD.style.display = 'block';
     };
     return Game;
 }());

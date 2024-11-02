@@ -18,6 +18,7 @@ export class Game {
     startPromptElement: HTMLElement;
     isActive: boolean;
     gameOverElement: HTMLElement;
+    HUD: HTMLElement;
 
     constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController) {
         this.gameCanvas = gameCanvas;
@@ -43,6 +44,7 @@ export class Game {
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
         this.isActive = false;    
         this.gameOverElement = document.getElementById('game-over-overlay')!;
+        this.HUD = document.getElementById('hud')!;
     }
 
 
@@ -141,6 +143,8 @@ export class Game {
         this.gameController.resetGame(); // Call reset on GameController
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
+        this.HUD.style.display = 'none';
+        this.hidePausePrompt();
     }
 
     showPausePrompt() {
@@ -153,8 +157,8 @@ export class Game {
    
 
     start() {
-        
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
+        this.HUD.style.display = 'block';
     }
 }
