@@ -1,15 +1,97 @@
-// Main.ts
 import { Game } from './components/Game.js';
 import { GameController } from './components/GameController.js';
-import { WebcamController } from './components/WebcamController.js'; // Import the new WebcamController
+import { WebcamController } from './components/WebcamController.js';
 document.addEventListener('DOMContentLoaded', function () {
-    // Main.ts or wherever you initialize your game
     var gameCanvas = document.getElementById('gameCanvas');
     var webcamCanvas = document.getElementById('webcamCanvas');
-    var gameController = new GameController(); // Create a GameController instance
-    var game = new Game(gameCanvas, webcamCanvas, gameController); // Pass it to the Game constructor
-    gameController.setGame(game); // Make sure GameController has reference to the Game
+    var initCamCanvas = document.getElementById('initCamCanvas');
+    var gameController = new GameController();
+    var game = new Game(gameCanvas, webcamCanvas, gameController);
+    gameController.setGame(game);
     // Setup webcam
     var video = document.getElementById('webcam');
-    var webcamController = new WebcamController(video, webcamCanvas); // Pass video and canvas to WebcamController
+    var webcamController = new WebcamController(video, webcamCanvas);
+    var initVideo = document.getElementById('initWebcam');
+    var initCamController = new WebcamController(initVideo, initCamCanvas);
+    var initScreen = document.getElementById('initial-screen');
+    var countdownElement = document.getElementById('countdown');
+    var countdown = 3;
+    var keyHeldDown = false;
+    var isResetting = false; // Flag to track if we're in reset mode
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'w' && !keyHeldDown) {
+            keyHeldDown = true;
+            if (game.isGameOver) {
+                isResetting = true; // Set the flag to reset mode
+                startResetCountdown(); // Start the reset countdown
+            }
+            else {
+                startGameCountdown(); // Start the game countdown if active
+            }
+        }
+    });
+    document.addEventListener('keyup', function (event) {
+        if (event.key === 'w') {
+            keyHeldDown = false;
+            // Pause the game when W is released
+            resetCountdown(); // Reset the countdown in case it was interrupted
+            if (game.isActive) {
+                game.pauseGame();
+            }
+        }
+    });
+    function startResetCountdown() {
+        countdownElement.textContent = "Hold W for ".concat(countdown, " more seconds to reset...");
+        var countdownInterval = setInterval(function () {
+            if (keyHeldDown && isResetting) {
+                if (countdown > 0) {
+                    countdownElement.style.display = 'block';
+                    countdownElement.textContent = "Hold W for ".concat(countdown, " more seconds to reset...");
+                    countdown--;
+                }
+                else {
+                    clearInterval(countdownInterval);
+                    game.resetGame(); // Reset the game
+                    if (initScreen) {
+                        initScreen.style.display = 'flex'; // Show initial screen
+                    }
+                    countdownElement.style.display = 'none';
+                    isResetting = false; // Reset the mode
+                    resetCountdown(); // Reset countdown for the next action
+                }
+            }
+            else {
+                clearInterval(countdownInterval);
+                resetCountdown();
+            }
+        }, 1000);
+    }
+    function startGameCountdown() {
+        countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
+        var countdownInterval = setInterval(function () {
+            if (keyHeldDown && !isResetting) {
+                if (countdown > 0) {
+                    countdownElement.style.display = 'block';
+                    countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
+                    countdown--;
+                }
+                else {
+                    clearInterval(countdownInterval);
+                    game.start(); // Start the game
+                    if (initScreen) {
+                        initScreen.style.display = 'none'; // Hide the initial screen
+                    }
+                    countdownElement.style.display = 'none';
+                }
+            }
+            else {
+                clearInterval(countdownInterval);
+                resetCountdown();
+            }
+        }, 1000);
+    }
+    function resetCountdown() {
+        countdown = 3; // Reset the countdown to its initial state
+        countdownElement.textContent = "Hold down W to start!";
+    }
 });

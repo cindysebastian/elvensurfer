@@ -1,4 +1,3 @@
-// WebcamController.ts
 export class WebcamController {
     private video: HTMLVideoElement;
     private canvas: HTMLCanvasElement;
@@ -18,45 +17,29 @@ export class WebcamController {
             this.video.srcObject = stream;
 
             this.video.onloadedmetadata = () => {
-                this.canvas.width = this.video.videoWidth;
-                this.canvas.height = this.video.videoHeight;
-
-                // Start capturing movement at a specified interval
-                setInterval(() => this.captureMovement(), 1000);
+                this.startProcessingLoop(); // Start the frame capture and processing loop
             };
         } catch (error) {
             console.error('Webcam setup error:', error);
         }
     }
 
-    private captureMovement() {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
+    private startProcessingLoop() {
+        const width = this.canvas.width = this.video.videoWidth;
+        const height = this.canvas.height = this.video.videoHeight;
 
-        if (width <= 0 || height <= 0) {
-            console.error('Invalid canvas dimensions');
-            return;
-        }
+        const processFrame = () => {
+            if (width > 0 && height > 0) {
+                // Draw frame to canvas (invisible to user, remove display none from CSS to see the frame)
+                this.ctx.drawImage(this.video, 0, 0, width, height);
+                const imageData = this.ctx.getImageData(0, 0, width, height);
 
-        try {
-            this.ctx.drawImage(this.video, 0, 0, width, height);
-            const imageData = this.ctx.getImageData(0, 0, width, height);
+                // Process imageData here for movement detection
 
-            // Process imageData for movement detection
-            // Implement movement logic based on image processing here
+            }
+            requestAnimationFrame(processFrame); // Schedule the next frame
+        };
 
-        } catch (error) {
-            console.error('Error during captureMovement:', error);
-        }
-    }
-
-    public updateSnapshot() {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
-
-        if (this.ctx) {
-            // Resize canvas to the webcam dimensions if needed
-            this.ctx.drawImage(this.video, 0, 0, width, height);
-        }
+        processFrame(); // Start the first frame
     }
 }
