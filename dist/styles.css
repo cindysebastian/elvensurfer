@@ -24,6 +24,7 @@ html {
     display: block;
     top: 5%;
     position: absolute;
+    z-index: 11;
 }
 
 /* HUD styles */
@@ -112,6 +113,14 @@ html {
     height: 70%;
 }
 
+/* Ensure the webcam overlay canvas sits above the video */
+#webcamOverlay {
+    display: block;
+    position: absolute;
+    z-index: 10;
+    height: 70%;
+}
+
 
 #webcam {
     height: 100%;
@@ -127,7 +136,7 @@ html {
 }
 
 #webcamCanvas {
-    display: none;
+    display: block;
 }
 
 #initCamCanvas {

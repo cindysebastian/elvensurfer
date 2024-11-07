@@ -1,12 +1,13 @@
 import { Game } from './components/Game.js';
 import { GameController } from './components/GameController.js';
-import { WebcamController} from './components/WebcamController.js';
+import { WebcamController} from './components/Webcam/WebcamController.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
     const gameCanvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
     const webcamCanvas = document.getElementById('webcamCanvas') as HTMLCanvasElement;
     const initCamCanvas = document.getElementById('initCamCanvas') as HTMLCanvasElement;
+    const initWebcamOverlayCanvas = document.getElementById('webcamOverlay') as HTMLCanvasElement;
 
     const gameController = new GameController();
     const game = new Game(gameCanvas, webcamCanvas, gameController);
@@ -15,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Setup webcam
     const video = document.getElementById('webcam') as HTMLVideoElement;
-    const webcamController = new WebcamController(video, webcamCanvas);
+    const webcamController = new WebcamController(video, webcamCanvas, initWebcamOverlayCanvas);
 
     const initVideo = document.getElementById('initWebcam') as HTMLVideoElement;
-    const initCamController = new WebcamController(initVideo, initCamCanvas);
+    const initCamController = new WebcamController(initVideo, initCamCanvas, initWebcamOverlayCanvas);
     const initScreen = document.getElementById('initial-screen');
     const countdownElement = document.getElementById('countdown')!;
 
