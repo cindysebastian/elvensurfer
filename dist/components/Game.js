@@ -1,6 +1,6 @@
 import { Player } from './player.js';
 var Game = /** @class */ (function () {
-    function Game(gameCanvas, webcamCanvas, gameController) {
+    function Game(gameCanvas, webcamCanvas, gameController, webcamController) {
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d');
         this.webcamCanvas = webcamCanvas;
@@ -19,6 +19,7 @@ var Game = /** @class */ (function () {
         ];
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
+        this.webcamController = webcamController;
         this.gameStarted = false; // Game has not started
         this.startPromptElement = document.getElementById('pausePrompt'); // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt

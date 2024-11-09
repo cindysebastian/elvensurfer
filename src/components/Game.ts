@@ -1,5 +1,6 @@
 import { Player } from './player.js';
 import { GameController } from './GameController.js';
+import { WebcamController } from './Webcam/WebcamController.js';
 
 export class Game {
     gameCanvas: HTMLCanvasElement;
@@ -14,13 +15,14 @@ export class Game {
     lanes: number[];
     isGameOver: boolean; // Add game state property
     gameController: GameController; // Add a reference to GameController
+    webcamController: WebcamController;
     gameStarted: boolean; // To track if the game has started
     startPromptElement: HTMLElement;
     isActive: boolean;
     gameOverElement: HTMLElement;
     HUD: HTMLElement;
 
-    constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController) {
+    constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController, webcamController: WebcamController) {
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d')!;
         this.webcamCanvas = webcamCanvas;
@@ -39,6 +41,7 @@ export class Game {
         ];
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
+        this.webcamController = webcamController;
         this.gameStarted = false; // Game has not started
         this.startPromptElement = document.getElementById('pausePrompt')!; // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt

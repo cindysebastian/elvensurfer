@@ -1,5 +1,6 @@
 // Import the necessary types
 import { RegionName, RegionMap, ReferenceFrames } from './RegionTypes.js';
+import { GameController } from '../GameController.js';
 
 export class WebcamController {
     private video: HTMLVideoElement;
@@ -18,11 +19,21 @@ export class WebcamController {
     private sensitivity: number;
     private lastComparisonTime: number = 0;
     private comparisonInterval: number;
-
+    private gameController: GameController;
+    private regionStatus: { [key in RegionName]: boolean } = {
+        topLeft: false,
+        topRight: false,
+        bottomLeft: false,
+        bottomRight: false,
+        middleLeft: false,
+        middleRight: false
+    };
+    
     constructor(
         videoElement: HTMLVideoElement, 
         canvasElement: HTMLCanvasElement, 
-        overlayCanvasElement: HTMLCanvasElement,  // Accept overlay canvas element
+        overlayCanvasElement: HTMLCanvasElement,  // Accept overlay canvas element,
+        gameController: GameController,
         sensitivity: number = 300, 
         comparisonInterval: number = 1000
     ) {
@@ -33,6 +44,7 @@ export class WebcamController {
         this.overlayCtx = overlayCanvasElement.getContext('2d') as CanvasRenderingContext2D;  // Context for overlay canvas
         this.sensitivity = sensitivity;
         this.comparisonInterval = comparisonInterval;  // Time in ms between each frame comparison
+        this.gameController = gameController;
         this.setupWebcam();
     }
 
@@ -76,23 +88,20 @@ export class WebcamController {
     private startProcessingLoop() {
         const processFrame = () => {
             const currentTime = performance.now();
-
-            // Check if enough time has passed for the next comparison
+    
             if (currentTime - this.lastComparisonTime >= this.comparisonInterval) {
                 this.lastComparisonTime = currentTime;
-
-                if (Object.keys(this.referenceFrames).length === 0) return; // No detection if reference frames are missing
-
+    
+                // Draw the current frame and clear the overlay canvas
                 this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
-                this.overlayCtx.clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);  // Clear the overlay canvas before drawing
-
+                this.overlayCtx.clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
+    
                 const regionCoords = this.getRegionCoordinates();
-
                 for (const region in regionCoords) {
-                    const regionKey = region as RegionName;  // Explicitly type as RegionName
+                    const regionKey = region as RegionName;
                     const { x, y, width, height } = regionCoords[regionKey];
                     const currentFrame = this.ctx.getImageData(x, y, width, height);
-
+                    
                     // Draw the regions for visual confirmation with a more visible style
                     this.overlayCtx.strokeStyle = 'rgba(255, 0, 0, 1)';  // Use bright red for visibility
                     this.overlayCtx.lineWidth = 4;  // Increase line width for better visibility
@@ -101,19 +110,31 @@ export class WebcamController {
                     // Ensure the reference frame for this region is not null
                     const referenceFrame = this.referenceFrames[regionKey];
                     if (referenceFrame) {
-                        if (this.detectMovement(currentFrame, referenceFrame)) {
-                            console.log(`Movement detected in ${region} region!`);
-                            // Trigger any actions specific to this region if needed
-                        }
-                    } else {
-                        console.warn(`Reference frame for region ${region} is not available.`);
+                        const movementDetected = this.detectMovement(currentFrame, referenceFrame);
+                        this.regionStatus[regionKey] = movementDetected;
                     }
                 }
+    
+                // Check region status to control player movement
+                const moveRight = this.regionStatus.topRight && this.regionStatus.bottomLeft;
+                const moveLeft = this.regionStatus.topLeft && this.regionStatus.bottomRight;
+    
+                if (moveRight) {
+                    this.gameController.playerController.movePlayerRightWebcam(); // Move player right
+                } else if (moveLeft) {
+                    this.gameController.playerController.movePlayerLeftWebcam(); // Move player left
+                } else {
+                    this.gameController.playerController.centerPlayerWebcam(); // Move player to center if no movement
+                }
             }
-            requestAnimationFrame(processFrame); // Schedule next frame processing
+    
+            requestAnimationFrame(processFrame);
         };
+    
         processFrame();
     }
+    
+    
 
     private getRegionCoordinates(): RegionMap {
         const { videoWidth: width, videoHeight: height } = this.video;
@@ -146,5 +167,5 @@ export class WebcamController {
 
         // Trigger movement detection if more than 1% of pixels are different
         return diffCount > currentFrame.width * currentFrame.height * 0.01;
-    }
+    }    
 }

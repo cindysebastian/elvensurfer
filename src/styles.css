@@ -136,7 +136,7 @@ html {
 }
 
 #webcamCanvas {
-    display: block;
+    display: none;
 }
 
 #initCamCanvas {

@@ -61,7 +61,6 @@ export class GameController {
         };
         loop(lastTime);
     }
-    
 
     resetGame() {
         this.playerController = new PlayerController(this.game.player); // Re-initialize player controller with new player instance

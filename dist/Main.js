@@ -7,15 +7,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var initCamCanvas = document.getElementById('initCamCanvas');
     var initWebcamOverlayCanvas = document.getElementById('webcamOverlay');
     var gameController = new GameController();
-    var game = new Game(gameCanvas, webcamCanvas, gameController);
-    gameController.setGame(game);
     // Setup webcam
     var video = document.getElementById('webcam');
-    var webcamController = new WebcamController(video, webcamCanvas, initWebcamOverlayCanvas);
+    var webcamController = new WebcamController(video, webcamCanvas, initWebcamOverlayCanvas, gameController);
     var initVideo = document.getElementById('initWebcam');
-    var initCamController = new WebcamController(initVideo, initCamCanvas, initWebcamOverlayCanvas);
+    var initCamController = new WebcamController(initVideo, initCamCanvas, initWebcamOverlayCanvas, gameController);
     var initScreen = document.getElementById('initial-screen');
     var countdownElement = document.getElementById('countdown');
+    var game = new Game(gameCanvas, webcamCanvas, gameController, webcamController);
+    gameController.setGame(game);
     var countdown = 3;
     var keyHeldDown = false;
     var isResetting = false; // Flag to track if we're in reset mode
@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', function () {
             keyHeldDown = false;
             // Pause the game when W is released
             resetCountdown(); // Reset the countdown in case it was interrupted
-            if (game.isActive) {
+            /*if(game.isActive){
                 game.pauseGame();
-            }
+            }*/
         }
     });
     function startResetCountdown() {

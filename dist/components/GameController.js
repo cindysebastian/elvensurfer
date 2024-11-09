@@ -34,7 +34,7 @@ var GameController = /** @class */ (function () {
                 // Check if enough time has passed for spawning an obstacle
                 if (_this.game.frameCount * _this.fixedDeltaTime >= _this.obstacleFrequency) {
                     console.log("Spawning Obstacle");
-                    _this.game.createObstacle();
+                    //this.game.createObstacle();
                     _this.game.frameCount = 0; // Reset frame count after creating obstacle
                 }
                 _this.game.drawObstacles(_this.obstacleSprite, _this.obstacleSpriteLoaded);
