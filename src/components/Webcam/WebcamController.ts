@@ -134,13 +134,12 @@ export class WebcamController {
                     const regionKey = region as RegionName;
                     const { x, y, width, height } = regionCoords[regionKey];
                     const currentFrame = this.ctx.getImageData(x, y, width, height);
-
-                    // Draw the regions for visual confirmation with a more visible style
-                    this.overlayCtx.strokeStyle = 'rgba(255, 0, 0, 1)';  // Use bright red for visibility
-                    this.overlayCtx.lineWidth = 4;  // Increase line width for better visibility
+    
+                    // Draw the regions for visual confirmation
+                    this.overlayCtx.strokeStyle = 'rgba(255, 0, 0, 1)';
+                    this.overlayCtx.lineWidth = 4;
                     this.overlayCtx.strokeRect(x, y, width, height);
-
-                    // Ensure the reference frame for this region is not null
+    
                     const referenceFrame = this.referenceFrames[regionKey];
                     if (referenceFrame) {
                         const movementDetected = this.detectMovement(currentFrame, referenceFrame);
@@ -148,16 +147,21 @@ export class WebcamController {
                     }
                 }
     
+                // Check if both middleLeft and middleRight regions are triggered
+                if (this.regionStatus.middleLeft && this.regionStatus.middleRight && !this.gameController.game.isActive) {
+                    this.gameController.game.startGameCountdown();  // Start the countdown for game start or reset
+                }
+    
                 // Check region status to control player movement
                 const moveRight = this.regionStatus.topRight && this.regionStatus.bottomLeft;
                 const moveLeft = this.regionStatus.topLeft && this.regionStatus.bottomRight;
     
                 if (moveRight) {
-                    this.gameController.playerController.movePlayerRightWebcam(); // Move player right
+                    this.gameController.playerController.movePlayerRightWebcam();
                 } else if (moveLeft) {
-                    this.gameController.playerController.movePlayerLeftWebcam(); // Move player left
+                    this.gameController.playerController.movePlayerLeftWebcam();
                 } else {
-                    this.gameController.playerController.centerPlayerWebcam(); // Move player to center if no movement
+                    this.gameController.playerController.centerPlayerWebcam();
                 }
             }
     
@@ -166,7 +170,6 @@ export class WebcamController {
     
         processFrame();
     }
-    
     
 
     private getRegionCoordinates(): RegionMap {

@@ -21,6 +21,7 @@ export class Game {
     isActive: boolean;
     gameOverElement: HTMLElement;
     HUD: HTMLElement;
+    startCountDownActive: boolean = false;
 
     constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController, webcamController: WebcamController) {
         this.gameCanvas = gameCanvas;
@@ -49,8 +50,6 @@ export class Game {
         this.gameOverElement = document.getElementById('game-over-overlay')!;
         this.HUD = document.getElementById('hud')!;
     }
-
-
 
     createObstacle() {
         if (!this.isActive) return; // Do not create obstacles if the game is not active
@@ -126,7 +125,6 @@ export class Game {
             }
         });
     }
-    
 
     drawScore() {
         const scoreElement = document.getElementById('score')!;
@@ -150,6 +148,44 @@ export class Game {
         this.hidePausePrompt();
     }
 
+    // Add this method in the Game class
+    startGameCountdown() {
+        if(this.startCountDownActive) return;
+
+        this.startCountDownActive = true;
+        const countdownElement = document.getElementById('countdown')!;  // Assuming you have a countdown element
+        const initScreen = document.getElementById('initial-screen');
+
+        let countdown = 3;
+        let isResetting = this.isGameOver;  // If the game is over, we'll reset; otherwise, we'll start
+        
+        countdownElement.textContent = `Starting in ${countdown} seconds...`;
+
+        const countdownInterval = setInterval(() => {
+            if (countdown > 0) {
+                countdownElement.style.display = 'block';
+                countdownElement.textContent = `Starting in ${countdown} seconds...`;
+                countdown--;
+            } else {
+                clearInterval(countdownInterval);
+                if (isResetting) {
+                    this.resetGame();  // Reset the game if it was over
+                    if(initScreen){
+                        initScreen.style.display = 'flex';
+                    }
+                } else {
+                    this.start();  // Start the game if it's not over
+                    if(initScreen){
+                        initScreen.style.display = 'none';
+                    }
+                }
+                countdownElement.style.display = 'none';
+                this.startCountDownActive = false;
+            
+            }
+        }, 1000);
+    }
+
     showPausePrompt() {
         this.startPromptElement.style.display = 'block'; // Show the prompt
     }
@@ -157,7 +193,6 @@ export class Game {
     hidePausePrompt() {
         this.startPromptElement.style.display = 'none'; // Hide the prompt
     }
-   
 
     start() {
         this.frameCount = 0; // Reset frame count

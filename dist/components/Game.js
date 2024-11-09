@@ -1,6 +1,7 @@
 import { Player } from './player.js';
 var Game = /** @class */ (function () {
     function Game(gameCanvas, webcamCanvas, gameController, webcamController) {
+        this.startCountDownActive = false;
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d');
         this.webcamCanvas = webcamCanvas;
@@ -114,6 +115,42 @@ var Game = /** @class */ (function () {
         this.isGameOver = false;
         this.HUD.style.display = 'none';
         this.hidePausePrompt();
+    };
+    // Add this method in the Game class
+    Game.prototype.startGameCountdown = function () {
+        var _this = this;
+        if (this.startCountDownActive)
+            return;
+        this.startCountDownActive = true;
+        var countdownElement = document.getElementById('countdown'); // Assuming you have a countdown element
+        var initScreen = document.getElementById('initial-screen');
+        var countdown = 3;
+        var isResetting = this.isGameOver; // If the game is over, we'll reset; otherwise, we'll start
+        countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
+        var countdownInterval = setInterval(function () {
+            if (countdown > 0) {
+                countdownElement.style.display = 'block';
+                countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
+                countdown--;
+            }
+            else {
+                clearInterval(countdownInterval);
+                if (isResetting) {
+                    _this.resetGame(); // Reset the game if it was over
+                    if (initScreen) {
+                        initScreen.style.display = 'flex';
+                    }
+                }
+                else {
+                    _this.start(); // Start the game if it's not over
+                    if (initScreen) {
+                        initScreen.style.display = 'none';
+                    }
+                }
+                countdownElement.style.display = 'none';
+                _this.startCountDownActive = false;
+            }
+        }, 1000);
     };
     Game.prototype.showPausePrompt = function () {
         this.startPromptElement.style.display = 'block'; // Show the prompt
