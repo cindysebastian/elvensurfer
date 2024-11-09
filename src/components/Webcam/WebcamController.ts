@@ -46,6 +46,7 @@ export class WebcamController {
         this.comparisonInterval = comparisonInterval;  // Time in ms between each frame comparison
         this.gameController = gameController;
         this.setupWebcam();
+        this.setupRetakeButton();
     }
 
     private async setupWebcam() {
@@ -85,6 +86,38 @@ export class WebcamController {
         }
     }
 
+    private setupRetakeButton() {
+        const button = document.getElementById('retakeReferenceFramesButton') as HTMLButtonElement;
+
+        if (button) {
+            button.addEventListener('click', () => {
+                this.startRetakeTimer();
+            });
+        }
+    }
+
+    private startRetakeTimer() {
+        console.log('Starting 3-second timer to retake reference frames.');
+
+        // Disable the button and start the timer
+        const button = document.getElementById('retakeReferenceFramesButton') as HTMLButtonElement;
+        if (button) button.disabled = true;
+
+        // Countdown for 3 seconds
+        let countdown = 3;
+        const countdownInterval = setInterval(() => {
+            if (countdown > 0) {
+                console.log(`Retake reference frames in ${countdown} seconds...`);
+                countdown--;
+            } else {
+                clearInterval(countdownInterval);  // Stop the countdown
+                console.log('Retaking reference frames...');
+                this.captureReferenceFrames();  // Retake reference frames
+                if (button) button.disabled = false;  // Enable button again after retake
+            }
+        }, 1000);
+    }
+
     private startProcessingLoop() {
         const processFrame = () => {
             const currentTime = performance.now();
@@ -101,7 +134,7 @@ export class WebcamController {
                     const regionKey = region as RegionName;
                     const { x, y, width, height } = regionCoords[regionKey];
                     const currentFrame = this.ctx.getImageData(x, y, width, height);
-                    
+
                     // Draw the regions for visual confirmation with a more visible style
                     this.overlayCtx.strokeStyle = 'rgba(255, 0, 0, 1)';  // Use bright red for visibility
                     this.overlayCtx.lineWidth = 4;  // Increase line width for better visibility
