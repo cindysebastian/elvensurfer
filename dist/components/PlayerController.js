@@ -43,6 +43,21 @@ var PlayerController = /** @class */ (function () {
             this.player.center();
         }
     };
+    PlayerController.prototype.centerPlayerWebcam = function () {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.player.center(); // Moves player back to the center lane
+    };
+    PlayerController.prototype.movePlayerRightWebcam = function () {
+        this.isMovingRight = true;
+        this.isMovingLeft = false;
+        this.player.moveRight();
+    };
+    PlayerController.prototype.movePlayerLeftWebcam = function () {
+        this.isMovingLeft = true;
+        this.isMovingRight = false;
+        this.player.moveLeft();
+    };
     return PlayerController;
 }());
 export { PlayerController };

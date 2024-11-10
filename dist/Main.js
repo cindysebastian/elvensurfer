@@ -1,20 +1,21 @@
 import { Game } from './components/Game.js';
 import { GameController } from './components/GameController.js';
-import { WebcamController } from './components/WebcamController.js';
+import { WebcamController } from './components/Webcam/WebcamController.js';
 document.addEventListener('DOMContentLoaded', function () {
     var gameCanvas = document.getElementById('gameCanvas');
     var webcamCanvas = document.getElementById('webcamCanvas');
     var initCamCanvas = document.getElementById('initCamCanvas');
+    var initWebcamOverlayCanvas = document.getElementById('webcamOverlay');
     var gameController = new GameController();
-    var game = new Game(gameCanvas, webcamCanvas, gameController);
-    gameController.setGame(game);
     // Setup webcam
     var video = document.getElementById('webcam');
-    var webcamController = new WebcamController(video, webcamCanvas);
+    var webcamController = new WebcamController(video, webcamCanvas, initWebcamOverlayCanvas, gameController);
     var initVideo = document.getElementById('initWebcam');
-    var initCamController = new WebcamController(initVideo, initCamCanvas);
+    var initCamController = new WebcamController(initVideo, initCamCanvas, initWebcamOverlayCanvas, gameController);
     var initScreen = document.getElementById('initial-screen');
     var countdownElement = document.getElementById('countdown');
+    var game = new Game(gameCanvas, webcamCanvas, gameController, webcamController);
+    gameController.setGame(game);
     var countdown = 3;
     var keyHeldDown = false;
     var isResetting = false; // Flag to track if we're in reset mode
@@ -33,11 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('keyup', function (event) {
         if (event.key === 'w') {
             keyHeldDown = false;
-            // Pause the game when W is released
             resetCountdown(); // Reset the countdown in case it was interrupted
-            if (game.isActive) {
-                game.pauseGame();
-            }
         }
     });
     function startResetCountdown() {

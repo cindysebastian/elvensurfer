@@ -1,6 +1,7 @@
 import { Player } from './player.js';
 var Game = /** @class */ (function () {
-    function Game(gameCanvas, webcamCanvas, gameController) {
+    function Game(gameCanvas, webcamCanvas, gameController, webcamController) {
+        this.startCountDownActive = false;
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d');
         this.webcamCanvas = webcamCanvas;
@@ -19,6 +20,7 @@ var Game = /** @class */ (function () {
         ];
         this.isGameOver = false; // Initialize game state
         this.gameController = gameController; // Set the GameController instance
+        this.webcamController = webcamController;
         this.gameStarted = false; // Game has not started
         this.startPromptElement = document.getElementById('pausePrompt'); // Assuming you have an element in HTML
         this.startPromptElement.style.display = 'none'; // Initially hide the prompt
@@ -99,10 +101,6 @@ var Game = /** @class */ (function () {
         var scoreElement = document.getElementById('score');
         scoreElement.textContent = 'Score: ' + this.score;
     };
-    Game.prototype.pauseGame = function () {
-        this.isActive = false; // Set game as inactive
-        this.showPausePrompt(); // Show prompt to hold W key to start again
-    };
     Game.prototype.resetGame = function () {
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
@@ -112,19 +110,47 @@ var Game = /** @class */ (function () {
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
         this.HUD.style.display = 'none';
-        this.hidePausePrompt();
     };
-    Game.prototype.showPausePrompt = function () {
-        this.startPromptElement.style.display = 'block'; // Show the prompt
-    };
-    Game.prototype.hidePausePrompt = function () {
-        this.startPromptElement.style.display = 'none'; // Hide the prompt
+    // Add this method in the Game class
+    Game.prototype.startGameCountdown = function () {
+        var _this = this;
+        if (this.startCountDownActive)
+            return;
+        this.startCountDownActive = true;
+        var countdownElement = document.getElementById('countdown'); // Assuming you have a countdown element
+        var initScreen = document.getElementById('initial-screen');
+        var countdown = 3;
+        var isResetting = this.isGameOver; // If the game is over, we'll reset; otherwise, we'll start
+        countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
+        var countdownInterval = setInterval(function () {
+            if (countdown > 0) {
+                countdownElement.style.display = 'block';
+                countdownElement.textContent = "Starting in ".concat(countdown, " seconds...");
+                countdown--;
+            }
+            else {
+                clearInterval(countdownInterval);
+                if (isResetting) {
+                    _this.resetGame(); // Reset the game if it was over
+                    if (initScreen) {
+                        initScreen.style.display = 'flex';
+                    }
+                }
+                else {
+                    _this.start(); // Start the game if it's not over
+                    if (initScreen) {
+                        initScreen.style.display = 'none';
+                    }
+                }
+                countdownElement.style.display = 'none';
+                _this.startCountDownActive = false;
+            }
+        }, 1000);
     };
     Game.prototype.start = function () {
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
         this.HUD.style.display = 'flex';
-        this.hidePausePrompt();
     };
     return Game;
 }());

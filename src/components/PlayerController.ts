@@ -51,4 +51,22 @@ export class PlayerController {
             this.player.center();
         }
     }
+
+    centerPlayerWebcam() {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.player.center(); // Moves player back to the center lane
+    }   
+    
+    movePlayerRightWebcam(){
+        this.isMovingRight = true;
+        this.isMovingLeft = false;
+        this.player.moveRight();
+    }
+
+    movePlayerLeftWebcam(){
+        this.isMovingLeft = true;
+        this.isMovingRight = false;
+        this.player.moveLeft();
+    }
 }
