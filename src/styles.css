@@ -111,6 +111,7 @@ html {
 
 #initWebcam {
     height: 70%;
+    transform: scaleX(-1);
 }
 
 /* Ensure the webcam overlay canvas sits above the video */
@@ -127,6 +128,7 @@ html {
     flex-grow: 1;
     display: flex;
     justify-content: center;
+    transform: scaleX(-1);
 }
 
 #placeholder {

@@ -131,11 +131,6 @@ export class Game {
         scoreElement.textContent = 'Score: ' + this.score;
     }
 
-    pauseGame() {
-        this.isActive = false; // Set game as inactive
-        this.showPausePrompt(); // Show prompt to hold W key to start again
-    }
-
     resetGame() {
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
@@ -145,7 +140,6 @@ export class Game {
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
         this.HUD.style.display = 'none';
-        this.hidePausePrompt();
     }
 
     // Add this method in the Game class
@@ -186,18 +180,9 @@ export class Game {
         }, 1000);
     }
 
-    showPausePrompt() {
-        this.startPromptElement.style.display = 'block'; // Show the prompt
-    }
-
-    hidePausePrompt() {
-        this.startPromptElement.style.display = 'none'; // Hide the prompt
-    }
-
     start() {
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
         this.HUD.style.display = 'flex';
-        this.hidePausePrompt();
     }
 }

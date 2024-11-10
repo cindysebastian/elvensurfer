@@ -101,10 +101,6 @@ var Game = /** @class */ (function () {
         var scoreElement = document.getElementById('score');
         scoreElement.textContent = 'Score: ' + this.score;
     };
-    Game.prototype.pauseGame = function () {
-        this.isActive = false; // Set game as inactive
-        this.showPausePrompt(); // Show prompt to hold W key to start again
-    };
     Game.prototype.resetGame = function () {
         this.player = new Player(this.gameCanvas.height);
         this.obstacles = [];
@@ -114,7 +110,6 @@ var Game = /** @class */ (function () {
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
         this.HUD.style.display = 'none';
-        this.hidePausePrompt();
     };
     // Add this method in the Game class
     Game.prototype.startGameCountdown = function () {
@@ -152,17 +147,10 @@ var Game = /** @class */ (function () {
             }
         }, 1000);
     };
-    Game.prototype.showPausePrompt = function () {
-        this.startPromptElement.style.display = 'block'; // Show the prompt
-    };
-    Game.prototype.hidePausePrompt = function () {
-        this.startPromptElement.style.display = 'none'; // Hide the prompt
-    };
     Game.prototype.start = function () {
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
         this.HUD.style.display = 'flex';
-        this.hidePausePrompt();
     };
     return Game;
 }());
