@@ -135,11 +135,6 @@ export class WebcamController {
                     const { x, y, width, height } = regionCoords[regionKey];
                     const currentFrame = this.ctx.getImageData(x, y, width, height);
     
-                    // Draw the regions for visual confirmation
-                    this.overlayCtx.strokeStyle = 'rgba(255, 0, 0, 1)';
-                    this.overlayCtx.lineWidth = 4;
-                    this.overlayCtx.strokeRect(x, y, width, height);
-    
                     const referenceFrame = this.referenceFrames[regionKey];
                     if (referenceFrame) {
                         const movementDetected = this.detectMovement(currentFrame, referenceFrame);

@@ -8,7 +8,7 @@ export class Game {
     webcamCanvas: HTMLCanvasElement;
     hudCtx: CanvasRenderingContext2D;
     player: Player;
-    obstacles: { x: number; y: number; width: number; height: number; laneIndex: number; }[];
+    obstacles: { element: HTMLImageElement; x: number; y: number; width: number; height: number; laneIndex: number; }[];
     frameCount: number;
     score: number;
     laneWidth: number;
@@ -22,6 +22,8 @@ export class Game {
     gameOverElement: HTMLElement;
     HUD: HTMLElement;
     startCountDownActive: boolean = false;
+    obstacleContainer: HTMLElement;
+    obstacleImagePath: string = '../assets/orc.gif'; // Path to the animated GIF
 
     constructor(gameCanvas: HTMLCanvasElement, webcamCanvas: HTMLCanvasElement, gameController: GameController, webcamController: WebcamController) {
         this.gameCanvas = gameCanvas;
@@ -49,30 +51,36 @@ export class Game {
         this.isActive = false;    
         this.gameOverElement = document.getElementById('game-over-overlay')!;
         this.HUD = document.getElementById('hud')!;
+        this.obstacleContainer = document.getElementById('obstacle-container')!;
     }
 
     createObstacle() {
-        if (!this.isActive) return; // Do not create obstacles if the game is not active
-
-        const testWidth = this.gameCanvas.width * 0.1;
-        const testHeight = this.gameCanvas.height * 0.1;
-
-        let width: number;
-        let height: number;
-
-        if (testHeight < testWidth) {
-            width = testWidth;
-            height = width; // Setting height equal to width in this case
-        } else {
-            height = testHeight;
-            width = height; // Setting width equal to height in this case
-        }
-
+        if (!this.isActive) return;
+    
+        const width = this.gameCanvas.width * 0.15;
+        const height = width; // Square obstacles
+    
         const laneIndex = Math.floor(Math.random() * 3);
         const x = this.lanes[laneIndex] - width / 2;
         const y = -height;
-        this.obstacles.push({ x, y, width, height, laneIndex });
+    
+        // Create a new img element for each obstacle
+        const obstacleImg = document.createElement('img');
+        obstacleImg.src = this.obstacleImagePath;
+        obstacleImg.classList.add('obstacle');
+        obstacleImg.style.width = `${width}px`;
+        obstacleImg.style.height = `${height}px`;
+        obstacleImg.style.position = 'absolute';
+        obstacleImg.style.left = `${x}px`;
+        obstacleImg.style.top = `${y}px`;
+    
+        // Append the img element to the obstacle container
+        this.obstacleContainer.appendChild(obstacleImg);
+    
+        // Add the obstacle to the array for tracking
+        this.obstacles.push({ element: obstacleImg, x, y, width, height, laneIndex });
     }
+    
 
     drawPlayer(playerSprite: HTMLImageElement, playerSpriteLoaded: boolean) {
         const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
@@ -84,44 +92,60 @@ export class Game {
         }
     }
 
-    drawObstacles(obstacleSprite: HTMLImageElement, obstacleSpriteLoaded: boolean) {
-        const obstacleSpeed = 8; // Speed of the obstacles
+    drawObstacles() {
+        const obstacleSpeed = 4; // Speed of obstacles
     
-        this.obstacles.forEach(obstacle => {
-            if (obstacleSpriteLoaded) {
-                this.gameCtx.drawImage(obstacleSprite, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            } else {
-                this.gameCtx.fillStyle = 'red';
-                this.gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            }
+        this.obstacles.forEach((obstacle, index) => {
+            obstacle.y += obstacleSpeed;
+            obstacle.element.style.top = `${obstacle.y}px`;
     
-            obstacle.y += obstacleSpeed; // Move obstacles down
-    
+            // Remove obstacles that move off the screen
             if (obstacle.y > this.gameCanvas.height) {
-                this.obstacles.shift();
+                this.obstacleContainer.removeChild(obstacle.element);
+                this.obstacles.splice(index, 1); // Remove from array
                 this.score++;
             }
         });
     }
-
+    
     detectCollision() {
-        if (this.isGameOver) return; // Prevent collision detection if game is over
+        if (this.isGameOver) return;
         const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
+    
         this.obstacles.forEach(obstacle => {
             if (playerX < obstacle.x + obstacle.width &&
                 playerX + this.player.width > obstacle.x &&
                 this.player.y < obstacle.y + obstacle.height &&
                 this.player.y + this.player.height > obstacle.y) {
-                this.isGameOver = true; // Set game state to over
-                
-                // Display the game over overlay
-                const finalScore = document.getElementById('final-score');
-                if (this.gameOverElement && finalScore) {
-                    finalScore.textContent = "Final Score: " + this.score; // Update the score display
-                    this.gameOverElement.style.display = 'block'; // Make the overlay visible
+    
+                this.isGameOver = true;
+                this.isActive = false;
+    
+                // Retrieve the current high score from local storage
+                const storedHighScore = localStorage.getItem('highScore');
+                const highScore = storedHighScore ? parseInt(storedHighScore) : 0;
+    
+                // Update high score if current score is higher
+                if (this.score > highScore) {
+                    localStorage.setItem('highScore', this.score.toString());
+    
+                    // Update the game over overlay with the new high score
+                    const highScoreDisplay = document.getElementById('high-score-display');
+                    if (highScoreDisplay) {
+                        highScoreDisplay.textContent = `${this.score}`;
+                    }
+                    const highScoreHud = document.getElementById(`high-score-hud`);
+                    if (highScoreHud) {
+                        highScoreHud.textContent = `High Score: ${this.score}`;
+                    }
                 }
     
-                this.isActive = false;
+                // Display the game over overlay with the final score
+                const finalScore = document.getElementById('final-score');
+                if (this.gameOverElement && finalScore) {
+                    finalScore.textContent = "Final Score: " + this.score;
+                    this.gameOverElement.style.display = 'block';
+                }
             }
         });
     }
@@ -133,14 +157,15 @@ export class Game {
 
     resetGame() {
         this.player = new Player(this.gameCanvas.height);
-        this.obstacles = [];
+        this.clearObstacles(); // Clear obstacles upon reset
         this.frameCount = 0;
         this.score = 0;
-        this.gameController.resetGame(); // Call reset on GameController
+        this.gameController.resetGame();
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
         this.HUD.style.display = 'none';
     }
+    
 
     // Add this method in the Game class
     startGameCountdown() {
@@ -185,4 +210,15 @@ export class Game {
         this.isActive = true; // Set game as active
         this.HUD.style.display = 'flex';
     }
+
+    clearObstacles() {
+        // Remove each obstacle element from the DOM
+        this.obstacles.forEach(obstacle => {
+            this.obstacleContainer.removeChild(obstacle.element);
+        });
+    
+        // Clear the obstacles array
+        this.obstacles = [];
+    }
+    
 }

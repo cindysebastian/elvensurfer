@@ -28,6 +28,27 @@ document.addEventListener('DOMContentLoaded', () => {
     let keyHeldDown = false;
     let isResetting = false; // Flag to track if we're in reset mode
 
+    const highScoreDisplay = document.getElementById('high-score-display')!;
+    const highScoreHud = document.getElementById('high-score-hud')!;
+    const storedHighScore = localStorage.getItem('highScore');
+    const highScore = storedHighScore ? parseInt(storedHighScore) : 0;
+    highScoreDisplay.textContent = `${highScore}`;
+    highScoreHud.textContent = `High Score: ${highScore}`;
+
+    const tutorialButton = document.getElementById('tutorial-button')!;
+    const tutorialOverlay = document.getElementById('tutorial-overlay')!;
+    const closeTutorialButton = document.getElementById('close-tutorial')!;
+
+    // Show tutorial overlay when "How to Play" button is clicked
+    tutorialButton.addEventListener('click', () => {
+        tutorialOverlay.style.display = 'flex'; // Show overlay with flex to center content
+    });
+
+    // Hide tutorial overlay when "Close" button is clicked
+    closeTutorialButton.addEventListener('click', () => {
+        tutorialOverlay.style.display = 'none'; // Hide overlay
+    });
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'w' && !keyHeldDown) {
             keyHeldDown = true;

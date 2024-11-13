@@ -33,13 +33,14 @@ html {
     justify-content: space-between;
     align-items: center;
     padding: 2%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: #333333;
     color: white;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100vw;
     height: 18%;
+    z-index: 9;
 }
 
 #game-over-overlay {
@@ -65,6 +66,15 @@ html {
     font-size: 40pt;
     /* Font size for score display */
     font-family: "Brush Script MT", fantasy;
+    z-index: 9;
+}
+
+#high-score-hud {
+    float: right;
+    margin-right: 5%;
+    font-size: 40pt;    
+    font-family: "Brush Script MT", fantasy;
+    z-index: 9;
 }
 
 #pausePrompt {
@@ -91,7 +101,7 @@ html {
 
 #start-text {
     position: absolute;
-    bottom: 8%;
+    bottom: 6%;
     text-align: center;
 }
 
@@ -129,6 +139,7 @@ html {
     display: flex;
     justify-content: center;
     transform: scaleX(-1);
+    z-index: 9;
 }
 
 #placeholder {
@@ -143,4 +154,87 @@ html {
 
 #initCamCanvas {
     display: none;
+}
+
+#retakeReferenceFramesButton, #tutorial-button {
+    margin: 10px;
+    bottom: 10%;
+    z-index: 10;
+    background-color: #175135;    
+    color: #e3a851;        
+    padding: 10px 20px;      
+    border: none;                     
+    border-radius: 8px;                
+    font-size: 16px;                   
+    cursor: pointer;                   
+    transition: background-color 0.3s,  
+                transform 0.2s;         
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+}
+
+#obstacle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* So it doesn’t interfere with user interactions */
+    z-index: 1; /* Ensures obstacles are behind the HUD */
+}
+
+#highScoreDiv {
+    position: absolute;
+    right: 10%;
+    top: 40%;
+    text-align: center;
+}
+
+#tutorialButtonDiv {
+    position: absolute;
+    left: 7%;
+    top: 40%;
+    text-align: center;
+}
+
+/* Tutorial overlay styles */
+#tutorial-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    z-index: 1001; /* Above other elements */
+    justify-content: center;
+    align-items: center;
+}
+
+#tutorial-content {
+    position: relative;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#tutorial-image {
+    max-width: 100%;
+    max-height: 90%;
+}
+
+#close-tutorial {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #d9534f;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
