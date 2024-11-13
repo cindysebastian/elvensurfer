@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var countdown = 3;
     var keyHeldDown = false;
     var isResetting = false; // Flag to track if we're in reset mode
+    var highScoreDisplay = document.getElementById('high-score-display');
+    var highScoreHud = document.getElementById('high-score-hud');
+    var storedHighScore = localStorage.getItem('highScore');
+    var highScore = storedHighScore ? parseInt(storedHighScore) : 0;
+    highScoreDisplay.textContent = "".concat(highScore);
+    highScoreHud.textContent = "High Score: ".concat(highScore);
     document.addEventListener('keydown', function (event) {
         if (event.key === 'w' && !keyHeldDown) {
             keyHeldDown = true;

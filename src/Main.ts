@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let keyHeldDown = false;
     let isResetting = false; // Flag to track if we're in reset mode
 
+    const highScoreDisplay = document.getElementById('high-score-display')!;
+    const highScoreHud = document.getElementById('high-score-hud')!;
+    const storedHighScore = localStorage.getItem('highScore');
+    const highScore = storedHighScore ? parseInt(storedHighScore) : 0;
+    highScoreDisplay.textContent = `${highScore}`;
+    highScoreHud.textContent = `High Score: ${highScore}`;
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'w' && !keyHeldDown) {
             keyHeldDown = true;

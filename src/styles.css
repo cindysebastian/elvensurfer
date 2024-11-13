@@ -69,6 +69,14 @@ html {
     z-index: 9;
 }
 
+#high-score-hud {
+    float: right;
+    margin-right: 5%;
+    font-size: 40pt;    
+    font-family: "Brush Script MT", fantasy;
+    z-index: 9;
+}
+
 #pausePrompt {
     position: absolute;
     color: white;
@@ -172,4 +180,11 @@ html {
     height: 100%;
     pointer-events: none; /* So it doesn’t interfere with user interactions */
     z-index: 1; /* Ensures obstacles are behind the HUD */
+}
+
+#highScoreDiv {
+    position: absolute;
+    right: 10%;
+    top: 40%;
+    text-align: center;
 }

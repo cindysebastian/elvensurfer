@@ -108,10 +108,8 @@ export class Game {
         });
     }
     
-
     detectCollision() {
         if (this.isGameOver) return;
-    
         const playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
     
         this.obstacles.forEach(obstacle => {
@@ -120,22 +118,37 @@ export class Game {
                 this.player.y < obstacle.y + obstacle.height &&
                 this.player.y + this.player.height > obstacle.y) {
     
-                this.isGameOver = true; // Set game over state
+                this.isGameOver = true;
+                this.isActive = false;
     
-                // Remove obstacles and display game over overlay
-                this.clearObstacles();
+                // Retrieve the current high score from local storage
+                const storedHighScore = localStorage.getItem('highScore');
+                const highScore = storedHighScore ? parseInt(storedHighScore) : 0;
     
+                // Update high score if current score is higher
+                if (this.score > highScore) {
+                    localStorage.setItem('highScore', this.score.toString());
+    
+                    // Update the game over overlay with the new high score
+                    const highScoreDisplay = document.getElementById('high-score-display');
+                    if (highScoreDisplay) {
+                        highScoreDisplay.textContent = `${this.score}`;
+                    }
+                    const highScoreHud = document.getElementById(`high-score-hud`);
+                    if (highScoreHud) {
+                        highScoreHud.textContent = `High Score: ${this.score}`;
+                    }
+                }
+    
+                // Display the game over overlay with the final score
                 const finalScore = document.getElementById('final-score');
                 if (this.gameOverElement && finalScore) {
                     finalScore.textContent = "Final Score: " + this.score;
                     this.gameOverElement.style.display = 'block';
                 }
-    
-                this.isActive = false;
             }
         });
     }
-    
 
     drawScore() {
         const scoreElement = document.getElementById('score')!;

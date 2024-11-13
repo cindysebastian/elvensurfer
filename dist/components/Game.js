@@ -86,15 +86,30 @@ var Game = /** @class */ (function () {
                 playerX + _this.player.width > obstacle.x &&
                 _this.player.y < obstacle.y + obstacle.height &&
                 _this.player.y + _this.player.height > obstacle.y) {
-                _this.isGameOver = true; // Set game over state
-                // Remove obstacles and display game over overlay
-                _this.clearObstacles();
+                _this.isGameOver = true;
+                _this.isActive = false;
+                // Retrieve the current high score from local storage
+                var storedHighScore = localStorage.getItem('highScore');
+                var highScore = storedHighScore ? parseInt(storedHighScore) : 0;
+                // Update high score if current score is higher
+                if (_this.score > highScore) {
+                    localStorage.setItem('highScore', _this.score.toString());
+                    // Update the game over overlay with the new high score
+                    var highScoreDisplay = document.getElementById('high-score-display');
+                    if (highScoreDisplay) {
+                        highScoreDisplay.textContent = "".concat(_this.score);
+                    }
+                    var highScoreHud = document.getElementById("high-score-hud");
+                    if (highScoreHud) {
+                        highScoreHud.textContent = "High Score: ".concat(_this.score);
+                    }
+                }
+                // Display the game over overlay with the final score
                 var finalScore = document.getElementById('final-score');
                 if (_this.gameOverElement && finalScore) {
                     finalScore.textContent = "Final Score: " + _this.score;
                     _this.gameOverElement.style.display = 'block';
                 }
-                _this.isActive = false;
             }
         });
     };
