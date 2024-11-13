@@ -2,6 +2,7 @@ import { Player } from './player.js';
 var Game = /** @class */ (function () {
     function Game(gameCanvas, webcamCanvas, gameController, webcamController) {
         this.startCountDownActive = false;
+        this.obstacleImagePath = '../assets/orc.gif'; // Path to the animated GIF
         this.gameCanvas = gameCanvas;
         this.gameCtx = gameCanvas.getContext('2d');
         this.webcamCanvas = webcamCanvas;
@@ -27,26 +28,29 @@ var Game = /** @class */ (function () {
         this.isActive = false;
         this.gameOverElement = document.getElementById('game-over-overlay');
         this.HUD = document.getElementById('hud');
+        this.obstacleContainer = document.getElementById('obstacle-container');
     }
     Game.prototype.createObstacle = function () {
         if (!this.isActive)
-            return; // Do not create obstacles if the game is not active
-        var testWidth = this.gameCanvas.width * 0.1;
-        var testHeight = this.gameCanvas.height * 0.1;
-        var width;
-        var height;
-        if (testHeight < testWidth) {
-            width = testWidth;
-            height = width; // Setting height equal to width in this case
-        }
-        else {
-            height = testHeight;
-            width = height; // Setting width equal to height in this case
-        }
+            return;
+        var width = this.gameCanvas.width * 0.15;
+        var height = width; // Square obstacles
         var laneIndex = Math.floor(Math.random() * 3);
         var x = this.lanes[laneIndex] - width / 2;
         var y = -height;
-        this.obstacles.push({ x: x, y: y, width: width, height: height, laneIndex: laneIndex });
+        // Create a new img element for each obstacle
+        var obstacleImg = document.createElement('img');
+        obstacleImg.src = this.obstacleImagePath;
+        obstacleImg.classList.add('obstacle');
+        obstacleImg.style.width = "".concat(width, "px");
+        obstacleImg.style.height = "".concat(height, "px");
+        obstacleImg.style.position = 'absolute';
+        obstacleImg.style.left = "".concat(x, "px");
+        obstacleImg.style.top = "".concat(y, "px");
+        // Append the img element to the obstacle container
+        this.obstacleContainer.appendChild(obstacleImg);
+        // Add the obstacle to the array for tracking
+        this.obstacles.push({ element: obstacleImg, x: x, y: y, width: width, height: height, laneIndex: laneIndex });
     };
     Game.prototype.drawPlayer = function (playerSprite, playerSpriteLoaded) {
         var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
@@ -58,20 +62,16 @@ var Game = /** @class */ (function () {
             this.gameCtx.fillRect(playerX, this.player.y, this.player.width, this.player.height);
         }
     };
-    Game.prototype.drawObstacles = function (obstacleSprite, obstacleSpriteLoaded) {
+    Game.prototype.drawObstacles = function () {
         var _this = this;
-        var obstacleSpeed = 8; // Speed of the obstacles
-        this.obstacles.forEach(function (obstacle) {
-            if (obstacleSpriteLoaded) {
-                _this.gameCtx.drawImage(obstacleSprite, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            }
-            else {
-                _this.gameCtx.fillStyle = 'red';
-                _this.gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-            }
-            obstacle.y += obstacleSpeed; // Move obstacles down
+        var obstacleSpeed = 4; // Speed of obstacles
+        this.obstacles.forEach(function (obstacle, index) {
+            obstacle.y += obstacleSpeed;
+            obstacle.element.style.top = "".concat(obstacle.y, "px");
+            // Remove obstacles that move off the screen
             if (obstacle.y > _this.gameCanvas.height) {
-                _this.obstacles.shift();
+                _this.obstacleContainer.removeChild(obstacle.element);
+                _this.obstacles.splice(index, 1); // Remove from array
                 _this.score++;
             }
         });
@@ -79,19 +79,20 @@ var Game = /** @class */ (function () {
     Game.prototype.detectCollision = function () {
         var _this = this;
         if (this.isGameOver)
-            return; // Prevent collision detection if game is over
+            return;
         var playerX = this.lanes[this.player.laneIndex] - this.player.width / 2;
         this.obstacles.forEach(function (obstacle) {
             if (playerX < obstacle.x + obstacle.width &&
                 playerX + _this.player.width > obstacle.x &&
                 _this.player.y < obstacle.y + obstacle.height &&
                 _this.player.y + _this.player.height > obstacle.y) {
-                _this.isGameOver = true; // Set game state to over
-                // Display the game over overlay
+                _this.isGameOver = true; // Set game over state
+                // Remove obstacles and display game over overlay
+                _this.clearObstacles();
                 var finalScore = document.getElementById('final-score');
                 if (_this.gameOverElement && finalScore) {
-                    finalScore.textContent = "Final Score: " + _this.score; // Update the score display
-                    _this.gameOverElement.style.display = 'block'; // Make the overlay visible
+                    finalScore.textContent = "Final Score: " + _this.score;
+                    _this.gameOverElement.style.display = 'block';
                 }
                 _this.isActive = false;
             }
@@ -103,10 +104,10 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.resetGame = function () {
         this.player = new Player(this.gameCanvas.height);
-        this.obstacles = [];
+        this.clearObstacles(); // Clear obstacles upon reset
         this.frameCount = 0;
         this.score = 0;
-        this.gameController.resetGame(); // Call reset on GameController
+        this.gameController.resetGame();
         this.gameOverElement.style.display = 'none';
         this.isGameOver = false;
         this.HUD.style.display = 'none';
@@ -151,6 +152,15 @@ var Game = /** @class */ (function () {
         this.frameCount = 0; // Reset frame count
         this.isActive = true; // Set game as active
         this.HUD.style.display = 'flex';
+    };
+    Game.prototype.clearObstacles = function () {
+        var _this = this;
+        // Remove each obstacle element from the DOM
+        this.obstacles.forEach(function (obstacle) {
+            _this.obstacleContainer.removeChild(obstacle.element);
+        });
+        // Clear the obstacles array
+        this.obstacles = [];
     };
     return Game;
 }());
