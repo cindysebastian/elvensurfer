@@ -169,41 +169,54 @@ export class Game {
 
     // Add this method in the Game class
     startGameCountdown() {
-        if(this.startCountDownActive) return;
-
+        if (this.startCountDownActive) return;
+    
         this.startCountDownActive = true;
         const countdownElement = document.getElementById('countdown')!;  // Assuming you have a countdown element
         const initScreen = document.getElementById('initial-screen');
-
+    
         let countdown = 3;
         let isResetting = this.isGameOver;  // If the game is over, we'll reset; otherwise, we'll start
-        
+    
         countdownElement.textContent = `Starting in ${countdown} seconds...`;
-
+    
         const countdownInterval = setInterval(() => {
-            if (countdown > 0) {
+            // Check if both middleLeft and middleRight regions are triggered
+            const middleLeftActive = this.webcamController.regionStatus.middleLeft;
+            const middleRightActive = this.webcamController.regionStatus.middleRight;
+    
+            if (middleLeftActive && middleRightActive) {
+                // If both regions are active, proceed with the countdown
                 countdownElement.style.display = 'block';
                 countdownElement.textContent = `Starting in ${countdown} seconds...`;
-                countdown--;
-            } else {
-                clearInterval(countdownInterval);
-                if (isResetting) {
-                    this.resetGame();  // Reset the game if it was over
-                    if(initScreen){
-                        initScreen.style.display = 'flex';
-                    }
+    
+                if (countdown > 0) {
+                    countdown--;
                 } else {
-                    this.start();  // Start the game if it's not over
-                    if(initScreen){
-                        initScreen.style.display = 'none';
+                    // Countdown finished, start or reset the game
+                    clearInterval(countdownInterval);
+                    if (isResetting) {
+                        this.resetGame();  // Reset the game if it was over
+                        if (initScreen) {
+                            initScreen.style.display = 'flex';
+                        }
+                    } else {
+                        this.start();  // Start the game if it's not over
+                        if (initScreen) {
+                            initScreen.style.display = 'none';
+                        }
                     }
+                    countdownElement.style.display = 'none';
+                    this.startCountDownActive = false;
                 }
-                countdownElement.style.display = 'none';
-                this.startCountDownActive = false;
-            
+            } else {
+                // If the player moves out of position, reset countdown and wait until they return to position
+                countdown = 3;
+                countdownElement.textContent = `Hold position to start: ${countdown} seconds...`;
             }
         }, 1000);
     }
+    
 
     start() {
         this.frameCount = 0; // Reset frame count

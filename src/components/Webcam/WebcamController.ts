@@ -20,7 +20,7 @@ export class WebcamController {
     private lastComparisonTime: number = 0;
     private comparisonInterval: number;
     private gameController: GameController;
-    private regionStatus: { [key in RegionName]: boolean } = {
+    public regionStatus: { [key in RegionName]: boolean } = {
         topLeft: false,
         topRight: false,
         bottomLeft: false,
@@ -35,7 +35,7 @@ export class WebcamController {
         overlayCanvasElement: HTMLCanvasElement,  // Accept overlay canvas element,
         gameController: GameController,
         sensitivity: number = 300, 
-        comparisonInterval: number = 1000
+        comparisonInterval: number = 250
     ) {
         this.video = videoElement;
         this.canvas = canvasElement;
