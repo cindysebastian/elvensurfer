@@ -15,6 +15,10 @@
         <canvas id="webcamOverlay"></canvas>
         <canvas id="initCamCanvas"></canvas>
         <video id="initWebcam" autoplay></video>
+        <div id="tutorialButtonDiv">
+            <h1>New to the game?</h1>
+            <button id="tutorial-button">Tutorial</button>
+        </div>
         <button id="retakeReferenceFramesButton">Retake Reference Frames</button>
         <div id="start-text">
             <h1>Do a T-Pose by holding your arms horizontally to start the game!</h1>
@@ -23,7 +27,12 @@
             <h1>High Score:</h1>
             <h2 id="high-score-display">0</h2>
         </div>
-
+        <div id="tutorial-overlay">
+            <div id="tutorial-content">
+                <img src="../assets/tutorial.png" alt="Tutorial" id="tutorial-image">
+                <button id="close-tutorial">Close</button>
+            </div>
+        </div>
     </div>
     <p id="countdown"></p>
     <canvas id="gameCanvas"></canvas>
@@ -36,7 +45,6 @@
         <canvas id="webcamCanvas"></canvas>
         <video id="webcam" autoplay playsinline></video>
         <span id="high-score-hud">High Score: 0</span>
-
     </div>
 
     <div id="game-over-overlay">

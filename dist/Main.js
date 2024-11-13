@@ -25,6 +25,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var highScore = storedHighScore ? parseInt(storedHighScore) : 0;
     highScoreDisplay.textContent = "".concat(highScore);
     highScoreHud.textContent = "High Score: ".concat(highScore);
+    var tutorialButton = document.getElementById('tutorial-button');
+    var tutorialOverlay = document.getElementById('tutorial-overlay');
+    var closeTutorialButton = document.getElementById('close-tutorial');
+    // Show tutorial overlay when "How to Play" button is clicked
+    tutorialButton.addEventListener('click', function () {
+        tutorialOverlay.style.display = 'flex'; // Show overlay with flex to center content
+    });
+    // Hide tutorial overlay when "Close" button is clicked
+    closeTutorialButton.addEventListener('click', function () {
+        tutorialOverlay.style.display = 'none'; // Hide overlay
+    });
     document.addEventListener('keydown', function (event) {
         if (event.key === 'w' && !keyHeldDown) {
             keyHeldDown = true;
